@@ -1,14 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block body %}
-        <h1 class="mt-4">Welcome</h1>
-        <div class="card mb-4">
-            <div class="card-body">
-                <p class="mb-0">
-                    This is a simple CMS to implement some basic Symfony features. <code>Don't use in production.</code>
-                </p>
-            </div>
+    <h1>Welcome</h1>
+    <div class="card mb-4">
+        <div class="card-body">
+            <p class="mb-0">
+                This is a simple CMS to implement some basic Symfony features. <code>Don't use in production.</code>
+            </p>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            {{ render(controller(
+                'App\\Controller\\HomeController::recentPosts'
+            )) }}
+        </div>
+        <div class="col-4">
+
+        </div>
+        <div class="col-4">
+
+        </div>
+    </div>
+
 {% endblock %}

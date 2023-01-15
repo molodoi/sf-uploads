@@ -1,0 +1,15 @@
+<div class="card">
+    <div class="card-body p-0 ">
+        <div class="card-header">
+            Last articles
+        </div>
+
+        <div class="list-group list-group-flush">
+            {% for post in posts %}
+                <a href="{{ path('app.post.edit', {id: post.id}) }}" class="list-group-item list-group-item-action">
+                    {{ post.title }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>

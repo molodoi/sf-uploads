@@ -1,3 +1,4 @@
+
 #---Symfony-And-Docker-Makefile---------------#
 # License: MIT
 #---------------------------------------------#
@@ -40,7 +41,7 @@ PHPQA_RUN = $(DOCKER_RUN) --init -it --rm -v $(PWD):/project -w /project $(PHPQA
 #------------#
 
 #---PHPUNIT-#
-PHPUNIT = APP_ENV=test $(SYMFONY) php bin/phpunit
+PHPUNIT = php bin/phpunit --testdox
 #------------#
 #---------------------------------------------#
 
@@ -77,7 +78,7 @@ sf-stop: ## Stop symfony server.
 	$(SYMFONY_SERVER_STOP)
 .PHONY: sf-stop
 
-sf-cc: ## Clear symfony cache.
+cache-clear: ## Clear symfony cache.
 	$(SYMFONY_CONSOLE) cache:clear
 .PHONY: sf-cc
 
@@ -85,41 +86,67 @@ sf-log: ## Show symfony logs.
 	$(SYMFONY) server:log
 .PHONY: sf-log
 
-sf-dc: ## Create symfony database.
+database-create: ## Create symfony database.
 	$(SYMFONY_CONSOLE) doctrine:database:create --if-not-exists
-.PHONY: sf-dc
+.PHONY: database-create
 
-sf-dd: ## Drop symfony database.
+database-drop: ## Drop symfony database.
 	$(SYMFONY_CONSOLE) doctrine:database:drop --if-exists --force
-.PHONY: sf-dd
+.PHONY: database-drop
 
-sf-su: ## Update symfony schema database.
+database-drop-test: ## Drop symfony database.
+	$(SYMFONY_CONSOLE) doctrine:database:drop --env=test --if-exists --force
+.PHONY: database-drop-test
+
+database-reinit: database-drop database-create migrate fixtures
+.PHONY: database-reinit
+
+database-reinit-test: database-drop-test database-create-test migrate-test fixtures-test
+.PHONY: database-reinit-test
+
+schema-update: ## Update symfony schema database.
 	$(SYMFONY_CONSOLE) doctrine:schema:update --force
-.PHONY: sf-su
+.PHONY: schema-update
 
-sf-mm: ## Make migrations.
+database-create-test: ## Create symfony database.
+	$(SYMFONY_CONSOLE) doctrine:database:create --env=test --if-not-exists
+.PHONY: database-create-test
+
+migrate-test: ## Migrate.
+	$(SYMFONY_CONSOLE) doctrine:migrations:migrate --env=test --no-interaction
+.PHONY: migrate-test
+
+migration: ## Make migrations.
 	$(SYMFONY_CONSOLE) make:migration
-.PHONY: sf-mm
+.PHONY: migration
 
-sf-dmm: ## Migrate.
+migrate: ## Migrate.
 	$(SYMFONY_CONSOLE) doctrine:migrations:migrate --no-interaction
-.PHONY: sf-dmm
+.PHONY: migrate
 
-sf-fixtures: ## Load fixtures.
+fixtures: ## Load fixtures.
 	$(SYMFONY_CONSOLE) doctrine:fixtures:load --no-interaction
-.PHONY: sf-fixtures
+.PHONY: fixtures
 
-sf-me: ## Make symfony entity
+fixtures-test: ## Load fixtures.
+	$(SYMFONY_CONSOLE) doctrine:fixtures:load --env=test --no-interaction
+.PHONY: fixtures-test
+
+entity: ## Make symfony entity
 	$(SYMFONY_CONSOLE) make:entity
-.PHONY: sf-me
+.PHONY: entity
 
-sf-mc: ## Make symfony controller
+controller: ## Make symfony controller
 	$(SYMFONY_CONSOLE) make:controller
-.PHONY: sf-mc
+.PHONY: controller
 
-sf-mf: ## Make symfony Form
+form: ## Make symfony Form
 	$(SYMFONY_CONSOLE) make:form
-.PHONY: sf-mf
+.PHONY: form
+
+crud: ## Make symfony Form
+	$(SYMFONY_CONSOLE) make:crud
+.PHONY: crud
 
 sf-perm: ## Fix permissions.
 	chmod -R 777 var
@@ -195,7 +222,19 @@ npm-watch: ## Watch assets.
 #---------------------------------------------#
 
 ## === 🐛  PHPQA =================================================
-qa-cs-fixer-dry-run: ## Run php-cs-fixer in dry-run mode.
+cs-fixer: ## Run php-cs-fixer.
+	tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src
+.PHONY: cs-fixer
+
+csfixer-dry-run: ## Run php-cs-fixer in dry-run mode.
+	tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src --dry-run
+.PHONY: cs-fixer-dry-run
+
+phpstan: ## Run phpstan.
+	vendor/bin/phpstan analyse ./src --level=max
+.PHONY: phpstan
+
+qa-cs-fixer-dry-run: ## Run php-cs-fixer in dry-run mode in docker.
 	$(PHPQA_RUN) php-cs-fixer fix ./src --rules=@Symfony --verbose --dry-run
 .PHONY: qa-cs-fixer-dry-run
 
@@ -203,7 +242,7 @@ qa-cs-fixer: ## Run php-cs-fixer.
 	$(PHPQA_RUN) php-cs-fixer fix ./src --rules=@Symfony --verbose
 .PHONY: qa-cs-fixer
 
-qa-phpstan: ## Run phpstan.
+qa-phpstan: ## Run phpstan docker.
 	$(PHPQA_RUN) phpstan analyse ./src --level=max
 .PHONY: qa-phpstan
 
@@ -242,7 +281,7 @@ qa-audit: ## Run composer audit.
 
 ## === 🔎  TESTS =================================================
 tests: ## Run tests.
-	$(PHPUNIT) --testdox
+	$(PHPUNIT)
 .PHONY: tests
 
 tests-coverage: ## Run tests with coverage.
@@ -251,10 +290,13 @@ tests-coverage: ## Run tests with coverage.
 #---------------------------------------------#
 
 ## === ⭐  OTHERS =================================================
-before-commit: qa-cs-fixer qa-phpstan qa-security-checker qa-phpcpd qa-lint-twigs qa-lint-yaml qa-lint-container qa-lint-schema tests ## Run before commit.
-.PHONY: before-commit
 
-first-install: docker-up composer-install npm-install npm-build sf-perm sf-dc sf-dmm sf-start sf-open ## First install.
+before-commit: cs-fixer phpstan qa-security-checker qa-lint-twigs qa-lint-yaml qa-lint-container qa-lint-schema tests ## Run before commit.
+.PHONY: before-commit
+#before-commit: qa-cs-fixer qa-phpstan qa-security-checker qa-phpcpd qa-lint-twigs qa-lint-yaml qa-lint-container qa-lint-schema tests ## Run before commit.
+#.PHONY: before-commit
+
+first-install: docker-up composer-install npm-install npm-build sf-perm database-create migrate sf-start sf-open ## First install.
 .PHONY: first-install
 
 start: docker-up sf-start sf-open ## Start project.
@@ -266,9 +308,9 @@ stop: docker-stop sf-stop ## Stop project.
 reset-db: ## Reset database.
 	$(eval CONFIRM := $(shell read -p "Are you sure you want to reset the database? [y/N] " CONFIRM && echo $${CONFIRM:-N}))
 	@if [ "$(CONFIRM)" = "y" ]; then \
-		$(MAKE) sf-dd; \
-		$(MAKE) sf-dc; \
-		$(MAKE) sf-dmm; \
+		$(MAKE) database-drop; \
+		$(MAKE) database-create; \
+		$(MAKE) migrate; \
 	fi
 .PHONY: reset-db
 #---------------------------------------------#
