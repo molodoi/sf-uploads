@@ -7,6 +7,6 @@ parameters:
     checkMissingIterableValueType: true
     paths:
         - src
-    ignoreErrors:
-        - '#Method App\\Repository\\(\w+\\)*\w+Repository::(get|find)\w+\(\) should return ((array|iterable)<)?App\\Entity\\(\w+\\)*\w+(>)?(\|null)? but returns (object|mixed)\.#'
+    ignoreErrors:        
         - '#Parameter \#1 \$category of method App\\Entity\\Post::setCategory\(\) expects App\\Entity\\Category\|null, object given.#'
+        - '#Method App\\Repository\\PostRepository::getLastPosts\(\) should return array<App\\Entity\\Post> but returns mixed.#'
