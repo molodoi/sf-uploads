@@ -9,13 +9,18 @@ class CategoryTest extends WebTestCase
     public function testIfCreateCategoryIsSuccessful(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/category/new');
+
+        /** @var UrlGeneratorInterface $urlGenerator */
+        $urlGenerator = $client->getContainer()->get("router");
+
+        $crawler = $client->request('GET', $urlGenerator->generate('app.category.new'));
 
         $this->assertTrue($client->getResponse()->isSuccessful());
+        $this->assertSame(1, $crawler->filter('html:contains("Create Category")')->count());
 
-        $form = $crawler->filter('form[name=category]')->form([
-            'category[title]' => "Functional WebTestCase CategoryTest",
-        ]);
+        // $form = $crawler->filter('form[name=category]')->form([
+        //     'category[title]' => "Functional WebTestCase CategoryTest",
+        // ]);
 
 //        $client->submit($form);
 

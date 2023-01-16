@@ -16,7 +16,8 @@ class PostTest extends WebTestCase
 
         $crawler = $client->request('GET', $urlGenerator->generate('app.post.new'));
 
-//        $this->assertTrue($client->getResponse()->isSuccessful());
+        // $this->assertTrue($client->getResponse()->isSuccessful());
+        $this->assertSame(0, $crawler->filter('html:contains("Create Post")')->count());
 
 //        $form = $crawler->filter('form[name=post]')->form([
 //            'post[title]' => "Functional WebTestCase PostTest",
