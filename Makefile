@@ -231,7 +231,7 @@ csfixer-dry-run: ## Run php-cs-fixer in dry-run mode.
 .PHONY: cs-fixer-dry-run
 
 phpstan: ## Run phpstan.
-	vendor/bin/phpstan analyse ./src --level=max
+	vendor/bin/phpstan analyse ./src ./tests --level=max
 .PHONY: phpstan
 
 qa-cs-fixer-dry-run: ## Run php-cs-fixer in dry-run mode in docker.

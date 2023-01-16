@@ -25,7 +25,7 @@ class CategoryTest extends KernelTestCase
         $this->assertCount(1, $errors);
     }
 
-    public function testEntityConstraintsInvalidTitle()
+    public function testEntityConstraintsInvalidTitle(): void
     {
         self::bootKernel();
         $container = static::getContainer();
