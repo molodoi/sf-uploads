@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ * (c) Fabien Potencier <fabien@symfony.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Category;
@@ -20,8 +27,8 @@ class CategoryController extends AbstractController
     {
         $pagination = $paginator->paginate(
             $categoryRepository->getAllCategoriesQuery(), /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
-            9 /*limit per page*/
+            $request->query->getInt('page', 1), /* page number */
+            9 /* limit per page */
         );
 
         return $this->render('category/index.html.twig', [
@@ -37,13 +44,12 @@ class CategoryController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             $this->addFlash(
                 'success',
                 'Category was created !'
             );
 
-           $categoryRepository->save($category, true);
+            $categoryRepository->save($category, true);
 
             return $this->redirectToRoute('app.category.index', [], Response::HTTP_SEE_OTHER);
         }
@@ -83,7 +89,7 @@ class CategoryController extends AbstractController
     #[Route('/{id}', name: 'app.category.delete', methods: ['POST'])]
     public function delete(Request $request, Category $category, CategoryRepository $categoryRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$category->getId(), (string) $request->request->get('_token'))) {
             $categoryRepository->remove($category, true);
         }
 

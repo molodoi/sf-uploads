@@ -2,7 +2,11 @@ parameters:
     level: 6
     symfony:
         container_xml_path: var/cache/dev/App_KernelDevDebugContainer.xml
-    checkGenericClassInNonGenericObjectType: false
-    checkMissingIterableValueType: false
+        console_application_loader: tests/phpstan/console-application.php
+    checkGenericClassInNonGenericObjectType: true
+    checkMissingIterableValueType: true
     paths:
         - src
+    ignoreErrors:
+        - '#Method App\\Repository\\(\w+\\)*\w+Repository::(get|find)\w+\(\) should return ((array|iterable)<)?App\\Entity\\(\w+\\)*\w+(>)?(\|null)? but returns (object|mixed)\.#'
+        - '#Parameter \#1 \$category of method App\\Entity\\Post::setCategory\(\) expects App\\Entity\\Category\|null, object given.#'

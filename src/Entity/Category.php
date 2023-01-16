@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ * (c) Fabien Potencier <fabien@symfony.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use App\Entity\Traits\HasIdTrait;
@@ -14,9 +21,13 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {
+    use HasIdTrait;
+    use HasTimestampTrait;
+    use HasTitleSlugTrait;
 
-    use HasIdTrait, HasTitleSlugTrait, HasTimestampTrait;
-
+    /**
+     * @var Collection<int, Post>
+     */
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Post::class, cascade: ['remove'])]
     private Collection $posts;
 
@@ -55,8 +66,8 @@ class Category
         return $this;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->title;
+        return (string) $this->title;
     }
 }

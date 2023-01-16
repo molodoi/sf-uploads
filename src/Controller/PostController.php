@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ * (c) Fabien Potencier <fabien@symfony.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Post;
@@ -19,9 +26,10 @@ class PostController extends AbstractController
     {
         $pagination = $paginator->paginate(
             $postRepository->getAllPostsQuery(), /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
-            9 /*limit per page*/
+            $request->query->getInt('page', 1), /* page number */
+            9 /* limit per page */
         );
+
         return $this->render('post/index.html.twig', [
             'posts' => $pagination,
         ]);
@@ -80,7 +88,7 @@ class PostController extends AbstractController
     #[Route('/{id}', name: 'app.post.delete', methods: ['POST'])]
     public function delete(Request $request, Post $post, PostRepository $postRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$post->getId(), (string) $request->request->get('_token'))) {
             $postRepository->remove($post, true);
         }
 

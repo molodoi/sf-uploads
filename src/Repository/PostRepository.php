@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ * (c) Fabien Potencier <fabien@symfony.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\Post;
@@ -40,15 +47,17 @@ class PostRepository extends ServiceEntityRepository
         }
     }
 
-    public function getAllPostsQuery(): Query{
+    public function getAllPostsQuery(): Query
+    {
         return $this->createQueryBuilder('p')
-            ->addSelect('p','c')
+            ->addSelect('p', 'c')
             ->leftJoin('p.category', 'c')
             ->orderBy('p.updatedAt', 'DESC')
             ->getQuery();
     }
 
-    public function getLastPosts($limit = 5): array
+    /** @return Post[] **/
+    public function getLastPosts(int $limit = 5): array
     {
         return $this->createQueryBuilder('p')
 //            ->andWhere('p.user = :val')

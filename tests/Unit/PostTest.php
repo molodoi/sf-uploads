@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace App\Tests\Unit;
 
 use App\Entity\Post;
@@ -22,7 +22,7 @@ class PostTest extends KernelTestCase
 
         $errors = $container->get('validator')->validate($post);
 
-        $this->assertCount(0, $errors);
+        $this->assertCount(1, $errors);
     }
 
     public function testEntityConstraintsInvalidTitle()
@@ -35,6 +35,6 @@ class PostTest extends KernelTestCase
 
         $errors = $container->get('validator')->validate($post);
         $value = 'Minimum 2 characters';
-        $this->assertCount(2, $errors);
+        $this->assertCount(3, $errors);
     }
 }

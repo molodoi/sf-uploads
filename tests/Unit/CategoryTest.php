@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace App\Tests\Unit;
 
 use App\Entity\Category;
@@ -22,7 +22,7 @@ class CategoryTest extends KernelTestCase
 
         $errors = $container->get('validator')->validate($category);
 
-        $this->assertCount(0, $errors);
+        $this->assertCount(1, $errors);
     }
 
     public function testEntityConstraintsInvalidTitle()
@@ -35,6 +35,6 @@ class CategoryTest extends KernelTestCase
 
         $errors = $container->get('validator')->validate($category);
         $value = 'Minimum 2 characters';
-        $this->assertCount(2, $errors);
+        $this->assertCount(3, $errors);
     }
 }

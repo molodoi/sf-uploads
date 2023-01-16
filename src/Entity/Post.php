@@ -1,22 +1,30 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ * (c) Fabien Potencier <fabien@symfony.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
+use App\Entity\Traits\HasIdTrait;
 use App\Entity\Traits\HasTimestampTrait;
 use App\Entity\Traits\HasTitleSlugTrait;
 use App\Repository\PostRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Traits\HasIdTrait;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 class Post
 {
-    use HasIdTrait, HasTitleSlugTrait, HasTimestampTrait;
+    use HasIdTrait;
+    use HasTimestampTrait;
+    use HasTitleSlugTrait;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
-
 
     public function getContent(): ?string
     {
