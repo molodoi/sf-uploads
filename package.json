@@ -25,6 +25,7 @@
     "dependencies": {
         "autoprefixer": "^10.4.13",
         "bootstrap": "^5.2.3",
+        "bs5-lightbox": "^1.8.2",
         "postcss-loader": "^7.0.2",
         "startbootstrap-sb-admin": "^7.0.5"
     }

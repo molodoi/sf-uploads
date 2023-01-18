@@ -1,38 +1,47 @@
 <div class="row">
-    {{ form_start(form, {'attr': {'id': 'form-post' }}) }}
+    {{ form_start(form, {'attr': {'id': 'form-post', 'class': 'row' }}) }}
     <div class="col-12 col-md-8">
         {{ form_widget(form._token) }}
         <div class="mb-3">
             {{ form_label(form.title, 'Title', {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.title, { 'attr': {'class': 'form-control'} }) }}
             {% if form_errors(form.title) %}
-                <div id="title" class="invalid-feedback">
-                    {{ form_errors(form.title) }}
-                </div>
+            <div id="post_titleFeedback" class="invalid-feedback">
+                {{ form_errors(form.title) }}
+            </div>
             {% endif %}
         </div>
         <div class="mb-3">
             {{ form_label(form.category, 'Categorie', {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.category, { 'attr': {'class': 'form-control'} }) }}
             {% if form_errors(form.category) %}
-                <div id="category" class="invalid-feedback">
-                    {{ form_errors(form.category) }}
-                </div>
+            <div id="post_categoryFeedback" class="invalid-feedback">
+                {{ form_errors(form.category) }}
+            </div>
             {% endif %}
         </div>
         <div class="mb-3">
             {{ form_label(form.content, 'Content', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.content, { 'attr': {'class': 'form-control', 'rows': '10'} }) }}
+            {{ form_widget(form.content, { 'attr': {'class': 'form-control', 'rows': '15'} }) }}
             {% if form_errors(form.content) %}
-                <div id="category" class="invalid-feedback">
-                    {{ form_errors(form.content) }}
-                </div>
+            <div id="post_contentFeedback" class="invalid-feedback">
+                {{ form_errors(form.content) }}
+            </div>
             {% endif %}
         </div>
-        <button type="submit" id="submit-post" class="btn btn-success btn-lg w-100">{{ button_label|default('Save') }}</button>
     </div>
     <div class="col-12 col-md-4">
-
+        <div class="mb-3">
+            {{ form_label(form.category, 'Feature Image', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.featuredImage, { 'attr': {'class': 'form-control mb-2'} }) }}
+            {% if form_errors(form.featuredImage) %}
+            <div id="category" class="invalid-feedback">
+                {{ form_errors(form.featuredImage) }}
+            </div>
+            {% endif %}
+        </div>
+        <button type="submit" id="submit-post" class="btn btn-success btn-lg w-100">{{ button_label|default('Save')
+            }}</button>
     </div>
     {{ form_end(form, {'render_rest': false}) }}
 </div>
