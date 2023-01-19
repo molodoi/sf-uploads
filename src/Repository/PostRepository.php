@@ -50,8 +50,9 @@ class PostRepository extends ServiceEntityRepository
     public function getAllPostsQuery(): Query
     {
         return $this->createQueryBuilder('p')
-            ->addSelect('p', 'c')
+            ->addSelect('p', 'c', 'i')
             ->leftJoin('p.category', 'c')
+            ->leftJoin('p.featuredImage', 'i')
             ->orderBy('p.updatedAt', 'DESC')
             ->getQuery();
     }
