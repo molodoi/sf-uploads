@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Entity\Post;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\HasIdTrait;
 use App\Repository\ImageRepository;
-use App\Entity\Traits\HasTimestampTrait;
 use Symfony\Component\HttpFoundation\File\File;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ImageRepository::class)]
@@ -15,7 +14,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class Image
 {
     use HasIdTrait;
-    use HasTimestampTrait;
+    use TimestampableEntity;
 
     #[Vich\UploadableField(mapping: 'post_thumbnail', fileNameProperty: 'imageName', size: 'imageSize')]
     private ?File $imageFile = null;
@@ -77,12 +76,12 @@ class Image
     public function setPost(?Post $post): self
     {
         // unset the owning side of the relation if necessary
-        if ($post === null && $this->post !== null) {
+        if (null === $post && null !== $this->post) {
             $this->post->setFeaturedImage(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($post !== null && $post->getFeaturedImage() !== $this) {
+        if (null !== $post && $post->getFeaturedImage() !== $this) {
             $post->setFeaturedImage($this);
         }
 

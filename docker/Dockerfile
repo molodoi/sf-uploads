@@ -29,6 +29,18 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf \
   \
   &&  pecl install apcu && docker-php-ext-enable apcu
 
+# Chromium and ChromeDriver
+# ENV PANTHER_NO_SANDBOX 1
+# Not mandatory, but recommended
+# ENV PANTHER_CHROME_ARGUMENTS='--disable-dev-shm-usage --no-sandbox --display=:0 --disable-gpu --disable-extensions --remote-debugging-port=9222'
+# ARG GECKODRIVER_VERSION=0.32.0
+
+# RUN apt-get install chromium chromium-chromedriver
+
+# RUN wget -q https://github.com/mozilla/geckodriver/releases/download/v$GECKODRIVER_VERSION/geckodriver-v$GECKODRIVER_VERSION-linux64.tar.gz; \
+#     tar -zxf geckodriver-v$GECKODRIVER_VERSION-linux64.tar.gz -C /usr/bin; \
+#     rm geckodriver-v$GECKODRIVER_VERSION-linux64.tar.gz
+
 WORKDIR /var/www/
 
 # COPY . /var/www

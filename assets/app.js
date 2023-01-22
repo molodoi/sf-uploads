@@ -13,6 +13,7 @@ require("../node_modules/startbootstrap-sb-admin/src/js/scripts.js");
 // start the Stimulus application
 import "./bootstrap";
 
+// Tooltip
 var tooltipTriggerList = [].slice.call(
     document.querySelectorAll('[data-bs-toggle="tooltip"]')
 );
@@ -20,6 +21,13 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl);
 });
 
+// dropdown
+// const dropdownElementList = document.querySelectorAll(".dropdown-toggle");
+// const dropdownList = [...dropdownElementList].map(
+//     (dropdownToggleEl) => new bootstrap.Dropdown(dropdownToggleEl)
+// );
+
+// lightbox
 import Lightbox from "bs5-lightbox";
 
 document

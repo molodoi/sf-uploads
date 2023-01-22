@@ -1,20 +1,20 @@
 <div class="row">
     {{ form_start(form, {'attr': {'id': 'form-category' }}) }}
-        <div class="col-12 col-md-8">
-            <div class="mb-3">
-                {{ form_widget(form._token) }}
-                {{ form_label(form.title, 'Title', {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(form.title, { 'attr': {'class': 'form-control'} }) }}
-                {% if form_errors(form.title) %}
-                    <div id="title" class="invalid-feedback">
-                        {{ form_errors(form.title) }}
-                    </div>
-                {% endif %}
+    <div class="col-12 col-md-8">
+        <div class="mb-3">
+            {{ form_widget(form._token) }}
+            {{ form_label(form.title, 'Title', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.title, { 'attr': {'class': 'form-control'} }) }}
+            {% if form_errors(form.title) %}
+            <div id="category_titleFeedback" class="invalid-feedback">
+                {{ form_errors(form.title) }}
             </div>
-            <button type="submit" id="submit-category" class="btn btn-success btn-lg w-100">{{ button_label|default('Save') }}</button>
+            {% endif %}
         </div>
-        <div class="col-12 col-md-4">
-        </div>
+        <button type="submit" id="submit-category" class="btn btn-success btn-lg w-100">{{ button_label|default('Save')
+            }}</button>
+    </div>
+    <div class="col-12 col-md-4">
+    </div>
     {{ form_end(form, {'render_rest': false}) }}
 </div>
-

@@ -10,10 +10,15 @@ class PostTest extends KernelTestCase
     public function getEntity(): Post
     {
         return (new Post())->setTitle('UnitTestPost Title');
-
     }
 
-    public function testEntityConstraintsIsValid(): void
+    public function testConstructNomicalCase(): void
+    {
+        $post = $this->getEntity();
+        self::assertInstanceOf(Post::class, $post);
+    }
+
+    public function testEntityConstraintsIsValidTitle(): void
     {
         self::bootKernel();
         $container = static::getContainer();
@@ -22,7 +27,7 @@ class PostTest extends KernelTestCase
 
         $errors = $container->get('validator')->validate($post);
 
-        $this->assertCount(1, $errors);
+        $this->assertCount(0, $errors);
     }
 
     public function testEntityConstraintsInvalidTitle(): void
@@ -34,7 +39,6 @@ class PostTest extends KernelTestCase
         $post->setTitle('');
 
         $errors = $container->get('validator')->validate($post);
-        $value = 'Minimum 2 characters';
-        $this->assertCount(3, $errors);
+        $this->assertCount(2, $errors);
     }
 }

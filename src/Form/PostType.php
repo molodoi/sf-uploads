@@ -10,14 +10,11 @@
 namespace App\Form;
 
 use App\Entity\Post;
-use App\Form\ImageType;
 use Symfony\Component\Form\AbstractType;
-use Vich\UploaderBundle\Form\Type\VichFileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class PostType extends AbstractType
 {
@@ -37,7 +34,7 @@ class PostType extends AbstractType
             ])
             ->add('category')
             ->add('content')
-            ->add('featuredImage', ImageType::class)
+            ->add('featuredImage', ImageType::class, ['required' => false])
         ;
     }
 

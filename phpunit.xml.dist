@@ -40,7 +40,12 @@
             </arguments>
         </listener>
     </listeners>
-
+    <extensions>
+        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
+    </extensions>
+    <extensions>
+        <extension class="Symfony\Component\Panther\ServerExtension" />
+    </extensions>
     <!-- Run `composer require symfony/panther` before enabling this extension -->
     <!--
     <extensions>

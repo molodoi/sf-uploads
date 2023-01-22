@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace App\Tests\Unit;
 
+use App\Entity\Post;
 use App\Entity\Category;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -9,11 +10,17 @@ class CategoryTest extends KernelTestCase
 {
     public function getEntity(): Category
     {
-        return (new Category())->setTitle('UnitTestCategory Title');
 
+        return (new Category())->setTitle('UnitTestCategory Title');
     }
 
-    public function testEntityConstraintsIsValid(): void
+    public function testConstructNomicalCase(): void
+    {
+        $category = $this->getEntity();
+        self::assertInstanceOf(Category::class, $category);
+    }
+
+    public function testEntityConstraintsIsValidTitle(): void
     {
         self::bootKernel();
         $container = static::getContainer();
@@ -21,8 +28,7 @@ class CategoryTest extends KernelTestCase
         $category = $this->getEntity();
 
         $errors = $container->get('validator')->validate($category);
-
-        $this->assertCount(1, $errors);
+        $this->assertCount(0, $errors);
     }
 
     public function testEntityConstraintsInvalidTitle(): void
@@ -32,9 +38,8 @@ class CategoryTest extends KernelTestCase
 
         $category = $this->getEntity();
         $category->setTitle('');
-
+        
         $errors = $container->get('validator')->validate($category);
-        $value = 'Minimum 2 characters';
-        $this->assertCount(3, $errors);
+        $this->assertCount(2, $errors);
     }
 }

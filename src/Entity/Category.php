@@ -10,19 +10,18 @@
 namespace App\Entity;
 
 use App\Entity\Traits\HasIdTrait;
-use App\Entity\Traits\HasTimestampTrait;
 use App\Entity\Traits\HasTitleSlugTrait;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {
     use HasIdTrait;
-    use HasTimestampTrait;
+    use TimestampableEntity;
     use HasTitleSlugTrait;
 
     /**
@@ -34,6 +33,7 @@ class Category
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        // $this->createdAt = new \DateTime();
     }
 
     /**

@@ -10,11 +10,11 @@
 namespace App\Entity;
 
 use App\Entity\Traits\HasIdTrait;
-use App\Entity\Traits\HasTimestampTrait;
 use App\Entity\Traits\HasTitleSlugTrait;
 use App\Repository\PostRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
@@ -22,7 +22,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class Post
 {
     use HasIdTrait;
-    use HasTimestampTrait;
+    use TimestampableEntity;
     use HasTitleSlugTrait;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -34,10 +34,9 @@ class Post
     #[ORM\OneToOne(inversedBy: 'post', targetEntity: Image::class, cascade: ['persist', 'remove'])]
     private ?Image $featuredImage = null;
 
-
     public function __construct()
-    {        
-        $this->createdAt = new \DateTime();  
+    {
+        $this->createdAt = new \DateTime();
     }
 
     public function getContent(): ?string

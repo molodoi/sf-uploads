@@ -6,10 +6,15 @@ PHP = $(EXEC) php
 COMPOSER = $(EXEC) composer
 NPM = $(EXEC) npm
 SYMFONY_CONSOLE = $(PHP) bin/console
+SYMFONY = php bin/console
+VENDOR = php vendor/bin/
 
 # Colors
 GREEN = /bin/echo -e "\x1b[32m\#\# $1\x1b[0m"
 RED = /bin/echo -e "\x1b[31m\#\# $1\x1b[0m"
+
+container-exec: ## (make container-exec cmd="vendor/bin/bdi detect drivers").
+	$(EXEC) $(cmd)
 
 ## —— 🔥 App ——
 init: ## Init the project
@@ -17,6 +22,9 @@ init: ## Init the project
 	$(MAKE) composer-install
 	$(MAKE) npm-install
 	@$(call GREEN,"The application is available at: http://127.0.0.1:8000/.")
+
+debug-router: ## Debug router
+	$(SYMFONY_CONSOLE) debug:router
 
 cache-clear: ## Clear cache
 	$(SYMFONY_CONSOLE) cache:clear
@@ -48,6 +56,10 @@ e2e-test: ## Run E2E tests
 	$(MAKE) database-init-test
 	$(PHP) bin/phpunit --testdox tests/E2E/
 
+coverage-test: ## coverage-html var/log/test/test-coverage
+	$(MAKE) database-init-test
+	$(SYMFONY) bin/phpunit --coverage-html var/log/test/test-coverage
+
 ## —— 🐳 Docker ——
 start: ## Start app
 	$(MAKE) docker-start 
@@ -66,13 +78,18 @@ prune:
 redocker:
 	$(MAKE) docker-stop prune start
 
-
 ## —— 🎻 Composer ——
 composer-install: ## Install dependencies
 	$(COMPOSER) install
 
 composer-update: ## Update dependencies
 	$(COMPOSER) update
+
+composer-require: ## (make composer-require cmd="--dev symfony/tiers-bundle").
+	$(COMPOSER) require $(cmd)
+
+composer-require-dev: ## (make composer-require cmd="--dev symfony/tiers-bundle").
+	$(COMPOSER) require --dev $(cmd)
 
 ## —— 🐈 NPM —————————————————————————————————————————————————————————————————
 npm-install: ## Install all npm dependencies
@@ -117,6 +134,44 @@ database-fixtures-load: ## Load fixtures
 
 fixtures: ## Alias : database-fixtures-load
 	$(MAKE) database-fixtures-load
+.PHONY: fixtures
+
+## -- Validation --
+cs-fixer-dry-run: ## Run php-cs-fixer in dry-run mode.
+	tools/php-cs-fixer/vendor/bin/php-cs-fixer fix ./src --rules=@Symfony --verbose --dry-run
+.PHONY: cs-fixer-dry-run
+
+cs-fixer: ## Run php-cs-fixer.
+	tools/php-cs-fixer/vendor/bin/php-cs-fixer fix ./src --rules=@Symfony --verbose
+.PHONY: cs-fixer
+
+phpstan: ## Run phpstan.
+	php vendor/bin/phpstan analyse ./src --level=7
+.PHONY: phpstan
+
+security-checker: ## Run security-checker.
+	$(SYMFONY_CONSOLE) security:check
+.PHONY: security-checker
+
+lint-twigs: ## Lint twig files.
+	$(SYMFONY_CONSOLE) lint:twig ./templates
+.PHONY: lint-twigs
+
+lint-yaml: ## Lint yaml files.
+	$(SYMFONY_CONSOLE) lint:yaml ./config
+.PHONY: lint-yaml
+
+lint-container: ## Lint container.
+	$(SYMFONY_CONSOLE) lint:container
+.PHONY: lint-container
+
+lint-schema: ## Lint Doctrine schema.
+	$(SYMFONY_CONSOLE) doctrine:schema:validate --skip-sync -vvv --no-interaction
+.PHONY: lint-schema
+
+
+before-commit: cs-fixer phpstan lint-twigs lint-yaml lint-container lint-schema tests ## Run before commit.
+.PHONY: before-commit
 
 ## —— 🛠️  Others ——
 help: ## List of commands
