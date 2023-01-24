@@ -28,6 +28,9 @@ class Image
     #[ORM\OneToOne(mappedBy: 'featuredImage', targetEntity: Post::class)]
     private ?Post $post = null;
 
+    #[ORM\ManyToOne(inversedBy: 'galleryImages', targetEntity: Post::class), ]
+    private ?Post $gpost = null;
+
     /**
      * Si vous téléchargez manuellement un fichier (c'est-à-dire sans utiliser Symfony Form), assurez-vous qu'une instance de 'UploadedFile' est injectée dans ce setter pour déclencher la mise à jour. Si le paramètre de configuration de ce bundle 'inject_on_load' est défini sur 'true' ce setter doit pouvoir accepter une instance de 'File' car le bundle en injectera une ici pendant l'hydratation Doctrine.
      */
@@ -90,8 +93,20 @@ class Image
         return $this;
     }
 
-    // public function __toString(): string
-    // {
-    //     return (string) $this->imageName;
-    // }
+    public function getGpost(): ?Post
+    {
+        return $this->gpost;
+    }
+
+    public function setGpost(?Post $gpost): self
+    {
+        $this->gpost = $gpost;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->imageName;
+    }
 }

@@ -39,6 +39,21 @@
             formCategory.submit();
             submitCategory.disabled = true;
         });
+        // https://jsfiddle.net/ey8ozh6n/
+        const addTagLink = document.createElement('a')
+        addTagLink.classList.add('add_gallery_link')
+        addTagLink.href = '#'
+        addTagLink.innerText = 'Add an image'
+        addTagLink.dataset.collectionHolderClass = 'images_gallery'
+
+        const newLinkLi = document.createElement('li').append(addTagLink)
+
+        const addGalleryLink = document.querySelector('.add_gallery_link');
+        const collectionHolder = document.querySelector('#post_galleryImages');
+        console.log(collectionHolder);
+        addGalleryLink.addEventListener('click', function (e) {
+            e.preventDefault();
+        });
     });
 </script>
 {% endblock %}

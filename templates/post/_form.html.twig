@@ -32,13 +32,41 @@
     </div>
     <div class="col-12 col-md-4">
         <div class="mb-3">
-            {{ form_label(form.category, 'Feature Image', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_label(form.featuredImage, 'Images', {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.featuredImage, { 'attr': {'class': 'form-control mb-2'} }) }}
             {% if form_errors(form.featuredImage) %}
-            <div id="category" class="invalid-feedback">
+            <div id="post_featuredImageFeedback" class="invalid-feedback">
                 {{ form_errors(form.featuredImage) }}
             </div>
             {% endif %}
+        </div>
+        <div class="mb-3">
+            {# {{ form_label(form.galleryImages, 'Gallery Images', {'label_attr': {'class': 'form-label'}}) }} #}
+            <div class="form-control mb-3">
+                <fieldset class="mb-3">
+                    {{ form_label(form.galleryImages, 'Gallery Images', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.galleryImages, { 'attr': {'class': 'form-control mb-2'} }) }}
+
+                    {% set prototype_file = form.galleryImages.vars.prototype %}
+                    <div class="form-group {% if form_errors(prototype_file.imageFile) %} is-invalid {% endif %}">
+                        {{ form_widget(prototype_file.imageFile, { 'attr': {'class': 'form-control file mt-2'} }) }}
+                    </div>
+                    {% if form_errors(form.galleryImages) %}
+                    <div id="post_galleryImagesFeedback" class="invalid-feedback">
+                        {{ form_errors(form.galleryImages) }}
+                    </div>
+                    {% endif %}
+                    <button type="button" class="add_item_link btn btn-light border border-secondary"
+                        data-collection-holder-class="galleryImages">Add
+                        an
+                        image</button>
+                </fieldset>
+                {# {{ form_row(form.galleryImages) }} #}
+                <button type="button" class="add_gallery_link btn btn-light border border-secondary"
+                    data-collection-holder-class="galleryImages">Add
+                    an
+                    image</button>
+            </div>
         </div>
         <button type="submit" id="submit-post" class="btn btn-success btn-lg w-100">{{ button_label|default('Save')
             }}</button>

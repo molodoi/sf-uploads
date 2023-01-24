@@ -11,6 +11,7 @@ namespace App\Form;
 
 use App\Entity\Post;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -35,6 +36,17 @@ class PostType extends AbstractType
             ->add('category')
             ->add('content')
             ->add('featuredImage', ImageType::class, ['required' => false])
+            ->add('galleryImages', CollectionType::class,
+            [
+                'entry_type' => ImageType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'required'  => false,
+                'by_reference' => false,
+            ]
+
+            )
         ;
     }
 
