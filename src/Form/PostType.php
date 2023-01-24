@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class PostType extends AbstractType
 {
@@ -35,18 +36,24 @@ class PostType extends AbstractType
             ])
             ->add('category')
             ->add('content')
-            ->add('featuredImage', ImageType::class, ['required' => false])
-            ->add('galleryImages', CollectionType::class,
-            [
-                'entry_type' => ImageType::class,
-                'allow_add' => true,
+            ->add('thumbFile', VichImageType::class, [
+                'required' => false,
                 'allow_delete' => true,
-                'prototype' => true,
-                'required'  => false,
-                'by_reference' => false,
-            ]
+                'delete_label' => 'Remove thumb',
+                'download_label' => 'Download',
+            ])
+            // ->add('featuredImage', ImageType::class, ['required' => false])
+            // ->add('galleryImages', CollectionType::class,
+            // [
+            //     'entry_type' => ImageType::class,
+            //     'allow_add' => true,
+            //     'allow_delete' => true,
+            //     'prototype' => true,
+            //     'required'  => false,
+            //     'by_reference' => false,
+            // ]
 
-            )
+            // )
         ;
     }
 

@@ -13,9 +13,9 @@
     {% for post in posts %}
     <div class="col-12 col-md-4">
         <div class="card mb-4">
-            {% if(post.featuredImage and post.featuredImage.imageName is not null) %}
-            <img src="{{ vich_uploader_asset(post.featuredImage,'imageFile') | imagine_filter('post_thumbnail') }}"
-                alt="" class="img-fluid">
+            {% if(post.thumbName and post.thumbName is not null) %}
+            <img src="{{ vich_uploader_asset(post,'thumbFile') | imagine_filter('post_thumbnail') }}" alt=""
+                class="img-fluid">
             {% else %}
             <img src="/600x280.png" alt="" class="img-fluid">
             {% endif %}

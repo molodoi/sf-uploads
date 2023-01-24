@@ -12,11 +12,10 @@ namespace App\Entity;
 use App\Entity\Traits\HasIdTrait;
 use App\Entity\Traits\HasTitleSlugTrait;
 use App\Repository\PostRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
@@ -33,16 +32,15 @@ class Post
     #[ORM\ManyToOne(inversedBy: 'posts', targetEntity: Category::class)]
     private ?Category $category = null;
 
-    #[ORM\OneToOne(inversedBy: 'post', targetEntity: Image::class, cascade: ['persist', 'remove'])]
-    private ?Image $featuredImage = null;
+    #[Vich\UploadableField(mapping: 'post_thumbnail', fileNameProperty: 'thumbName')]
+    private ?File $thumbFile = null;
 
-    #[ORM\OneToMany(mappedBy: 'gpost', targetEntity: Image::class, cascade: ['persist'])]
-    private Collection $galleryImages;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $thumbName = null;
 
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->galleryImages = new ArrayCollection();
     }
 
     public function getContent(): ?string
@@ -69,46 +67,30 @@ class Post
         return $this;
     }
 
-    public function getFeaturedImage(): ?Image
+    public function setThumbFile(?File $thumbFile = null): void
     {
-        return $this->featuredImage;
-    }
+        $this->thumbFile = $thumbFile;
 
-    public function setFeaturedImage(?Image $featuredImage): self
-    {
-        $this->featuredImage = $featuredImage;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Image>
-     */
-    public function getGalleryImages(): Collection
-    {
-        return $this->galleryImages;
-    }
-
-    public function addGalleryImage(Image $galleryImage): self
-    {
-        if (!$this->galleryImages->contains($galleryImage)) {
-            $this->galleryImages->add($galleryImage);
-            $galleryImage->setGpost($this);
+        if (null !== $thumbFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTime();
         }
-
-        return $this;
     }
 
-    public function removeGalleryImage(Image $galleryImage): self
+    public function getThumbFile(): ?File
     {
-        if ($this->galleryImages->removeElement($galleryImage)) {
-            // set the owning side to null (unless already changed)
-            if ($galleryImage->getGpost() === $this) {
-                $galleryImage->setGpost(null);
-            }
-        }
+        return $this->thumbFile;
+    }
 
-        return $this;
+    public function setThumbName(?string $thumbName): void
+    {
+        $this->thumbName = $thumbName;
+    }
+
+    public function getThumbName(): ?string
+    {
+        return $this->thumbName;
     }
 
     public function __toString(): string

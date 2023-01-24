@@ -32,18 +32,18 @@
     </div>
     <div class="col-12 col-md-4">
         <div class="mb-3">
-            {{ form_label(form.featuredImage, 'Images', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(form.featuredImage, { 'attr': {'class': 'form-control mb-2'} }) }}
-            {% if form_errors(form.featuredImage) %}
+            {{ form_label(form.thumbFile, 'Images', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.thumbFile, { 'attr': {'class': 'form-control mb-2'} }) }}
+            {% if form_errors(form.thumbFile) %}
             <div id="post_featuredImageFeedback" class="invalid-feedback">
-                {{ form_errors(form.featuredImage) }}
+                {{ form_errors(form.thumbFile) }}
             </div>
             {% endif %}
         </div>
         <div class="mb-3">
             {# {{ form_label(form.galleryImages, 'Gallery Images', {'label_attr': {'class': 'form-label'}}) }} #}
             <div class="form-control mb-3">
-                <fieldset class="mb-3">
+                {# <fieldset class="mb-3">
                     {{ form_label(form.galleryImages, 'Gallery Images', {'label_attr': {'class': 'form-label'}}) }}
                     {{ form_widget(form.galleryImages, { 'attr': {'class': 'form-control mb-2'} }) }}
 
@@ -60,7 +60,7 @@
                         data-collection-holder-class="galleryImages">Add
                         an
                         image</button>
-                </fieldset>
+                </fieldset> #}
                 {# {{ form_row(form.galleryImages) }} #}
                 <button type="button" class="add_gallery_link btn btn-light border border-secondary"
                     data-collection-holder-class="galleryImages">Add

@@ -45,8 +45,8 @@
         </p>
     </div>
     <div class="col-12 col-md-4 order-1 order-md-2">
-        {% if(post.featuredImage and post.featuredImage.imageName is not null) %}
-        <img src="{{ vich_uploader_asset(post.featuredImage,'imageFile') | imagine_filter('post_thumbnail') }}" alt=""
+        {% if(post.thumbName is not null) %}
+        <img src="{{ vich_uploader_asset(post,'thumbFile') | imagine_filter('post_thumbnail') }}" alt=""
             class="img-fluid mb-2">
         {% endif %}
     </div>
