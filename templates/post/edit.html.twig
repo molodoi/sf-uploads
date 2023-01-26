@@ -40,20 +40,46 @@
             submitCategory.disabled = true;
         });
         // https://jsfiddle.net/ey8ozh6n/
-        const addTagLink = document.createElement('a')
-        addTagLink.classList.add('add_gallery_link')
-        addTagLink.href = '#'
-        addTagLink.innerText = 'Add an image'
-        addTagLink.dataset.collectionHolderClass = 'images_gallery'
+        // Create AddImageLink
+        const addImageLink = document.createElement('a');
+        addImageLink.classList.add('btn', 'btn-light', 'border', 'border-secondary', 'my-2');
+        addImageLink.href = '#';
+        addImageLink.innerText = 'Add an image';
+        addImageLink.dataset.collectionHolderClass = 'post_images';
 
-        const newLinkLi = document.createElement('li').append(addTagLink)
+        const newLinkLi = document.createElement('li').append(addImageLink);
 
-        const addGalleryLink = document.querySelector('.add_gallery_link');
-        const collectionHolder = document.querySelector('#post_galleryImages');
-        console.log(collectionHolder);
-        addGalleryLink.addEventListener('click', function (e) {
+        const collectionImagesHolder = document.querySelector('#post_images');
+        collectionImagesHolder.appendChild(addImageLink);
+
+        const addFormToCollection = (e) => {
             e.preventDefault();
-        });
+            const collectionImagesHolder = document.querySelector('#' + e.currentTarget.dataset.collectionHolderClass);
+
+            const itemImageInput = document.createElement('div');
+            itemImageInput.classList.add('mb-3');
+            itemImageInput.innerHTML = collectionImagesHolder
+                .dataset
+                .prototype
+                .replace(
+                    /__name__/g,
+                    collectionImagesHolder.dataset.index
+                );
+
+            // Create RemoveLink
+            const removeLink = document.createElement('a');
+            removeLink.classList.add('link-danger');
+            removeLink.href = '#';
+            removeLink.innerText = 'Remove image file';
+
+            itemImageInput.prepend(removeLink);
+
+            collectionImagesHolder.appendChild(itemImageInput);
+            collectionImagesHolder.dataset.index++;
+        };
+        addImageLink.addEventListener('click', addFormToCollection);
+
+
     });
 </script>
 {% endblock %}

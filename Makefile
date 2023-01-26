@@ -42,15 +42,15 @@ entity: ## Make entity
 .PHONY: entity
 
 controller: ## Make controller
-	$(SYMFONY_CONSOLE) make:controller
+	$(SYMFONY) make:controller
 .PHONY: controller
 
 crud: ## Make crud
-	$(SYMFONY_CONSOLE) make:crud 
+	$(SYMFONY) make:crud 
 .PHONY: crud
 
 form: ## Make form
-	$(SYMFONY_CONSOLE) make:form
+	$(SYMFONY) make:form
 .PHONY: form
 
 ## —— ✅ Test ——

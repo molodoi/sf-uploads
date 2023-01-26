@@ -12,6 +12,8 @@ namespace App\Entity;
 use App\Entity\Traits\HasIdTrait;
 use App\Entity\Traits\HasTitleSlugTrait;
 use App\Repository\PostRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -38,9 +40,13 @@ class Post
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $thumbName = null;
 
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Image::class, cascade: ['persist', 'remove'], orphanRemoval:true)]
+    private Collection $images;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->images = new ArrayCollection();
     }
 
     public function getContent(): ?string
@@ -96,5 +102,35 @@ class Post
     public function __toString(): string
     {
         return (string) $this->title;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getPost() === $this) {
+                $image->setPost(null);
+            }
+        }
+
+        return $this;
     }
 }

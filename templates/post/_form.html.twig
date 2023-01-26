@@ -31,8 +31,17 @@
         </div>
     </div>
     <div class="col-12 col-md-4">
+        <p class="mb-0">Actions</p>
+        <hr class="my-4">
         <div class="mb-3">
-            {{ form_label(form.thumbFile, 'Images', {'label_attr': {'class': 'form-label'}}) }}
+            <button type="submit" id="submit-post" class="btn btn-success btn-lg w-100">{{ button_label|default('Save')
+                }}</button>
+        </div>
+        <hr class="my-4">
+        <p class="mb-0">Images</p>
+        <hr class="my-4">
+        <div class="form-control mb-3">
+            {{ form_label(form.thumbFile, 'Thumb (featured image)', {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.thumbFile, { 'attr': {'class': 'form-control mb-2'} }) }}
             {% if form_errors(form.thumbFile) %}
             <div id="post_featuredImageFeedback" class="invalid-feedback">
@@ -40,36 +49,23 @@
             </div>
             {% endif %}
         </div>
-        <div class="mb-3">
-            {# {{ form_label(form.galleryImages, 'Gallery Images', {'label_attr': {'class': 'form-label'}}) }} #}
-            <div class="form-control mb-3">
-                {# <fieldset class="mb-3">
-                    {{ form_label(form.galleryImages, 'Gallery Images', {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.galleryImages, { 'attr': {'class': 'form-control mb-2'} }) }}
+        <p class="mb-0">Gallery</p>
+        <div class="form-control mb-3">
+            <ul id="post_images" class="list-unstyled" data-index="{{ form.images|length> 0 ? form.images|last.vars.name + 1 : 0
+                }}" data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}">
 
-                    {% set prototype_file = form.galleryImages.vars.prototype %}
-                    <div class="form-group {% if form_errors(prototype_file.imageFile) %} is-invalid {% endif %}">
-                        {{ form_widget(prototype_file.imageFile, { 'attr': {'class': 'form-control file mt-2'} }) }}
-                    </div>
-                    {% if form_errors(form.galleryImages) %}
-                    <div id="post_galleryImagesFeedback" class="invalid-feedback">
-                        {{ form_errors(form.galleryImages) }}
-                    </div>
-                    {% endif %}
-                    <button type="button" class="add_item_link btn btn-light border border-secondary"
-                        data-collection-holder-class="galleryImages">Add
-                        an
-                        image</button>
-                </fieldset> #}
-                {# {{ form_row(form.galleryImages) }} #}
-                <button type="button" class="add_gallery_link btn btn-light border border-secondary"
-                    data-collection-holder-class="galleryImages">Add
-                    an
-                    image</button>
-            </div>
+                {% for image in form.images %}
+                <li class="">
+                    {{ form_row(image.imageFile) }}
+                    <a href="{{ path('app.post.image.delete', {'id': post.id, 'image_id': image.vars.data.id}) }}"
+                        class="btn btn-danger">
+                        <i class="fa-solid fa-trash"></i>
+                        Delete
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
-        <button type="submit" id="submit-post" class="btn btn-success btn-lg w-100">{{ button_label|default('Save')
-            }}</button>
     </div>
     {{ form_end(form, {'render_rest': false}) }}
 </div>
