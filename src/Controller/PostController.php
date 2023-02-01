@@ -11,15 +11,15 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Form\PostType;
-use App\Repository\PostRepository;
 use App\Repository\ImageRepository;
+use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/post')]
 class PostController extends AbstractController
@@ -97,9 +97,9 @@ class PostController extends AbstractController
         return $this->redirectToRoute('app.post.index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/image/{image_id}', name: 'app.post.image.delete', methods: ['GET'], requirements: ['id' => '\d+','image_id' => '\d+'])]
-    public function deleteImage(Request $request, Post $post,ImageRepository $imageRepo, 
-    EntityManagerInterface $entityManager,): RedirectResponse
+    #[Route('/{id}/image/{image_id}', name: 'app.post.image.delete', methods: ['GET'], requirements: ['id' => '\d+', 'image_id' => '\d+'])]
+    public function deleteImage(Request $request, Post $post, ImageRepository $imageRepo,
+    EntityManagerInterface $entityManager, ): RedirectResponse
     {
         /** App\Entity\Image $image */
         $image = $imageRepo->find($request->get('image_id'));

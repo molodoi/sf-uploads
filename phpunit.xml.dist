@@ -16,6 +16,11 @@
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" />
+        <!-- <server
+            name="DATABASE_URL"
+            value="mysql://root:password@db_sfuploads:3306/sf6-webapp?serverVersion=8&charset=utf8mb4"
+            force="true"
+        /> -->
     </php>
 
     <testsuites>

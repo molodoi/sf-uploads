@@ -9,7 +9,12 @@ class BasicTest extends PantherTestCase
 {
     public function testEnvironnementIsOk(): void
     {
-        
-        $this->assertTrue(true);
+        $client = self::createPantherClient([
+            'browser' => PantherTestCase::FIREFOX
+        ]);
+
+        $crawler = $client->request('GET', '/');
+        $this->assertSelectorExists('h1');
+        $this->assertPageTitleContains('Welcome');
     }
 }

@@ -43,16 +43,15 @@ class PostType extends AbstractType
                 'download_label' => 'Download',
             ])
             ->add('images', CollectionType::class,
-            [
-                'entry_type' => ImageType::class,
-                'entry_options' => ['label' => false],
-                'allow_add' => true,
-                'allow_delete' => true,
-                'prototype' => true,
-                'required'  => false,
-                'by_reference' => false, // Save l'image.post_id
-            ]
-
+                [
+                    'entry_type' => ImageType::class,
+                    'entry_options' => ['label' => false],
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'prototype' => true,
+                    'required' => false,
+                    'by_reference' => false, // Save l'image.post_id
+                ]
             )
         ;
     }

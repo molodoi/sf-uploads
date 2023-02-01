@@ -2,13 +2,12 @@
 
 namespace App\Entity;
 
-use App\Entity\Post;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\HasIdTrait;
 use App\Repository\ImageRepository;
-use Symfony\Component\HttpFoundation\File\File;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ImageRepository::class)]

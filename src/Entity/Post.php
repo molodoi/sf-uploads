@@ -40,7 +40,10 @@ class Post
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $thumbName = null;
 
-    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Image::class, cascade: ['persist', 'remove'], orphanRemoval:true)]
+    /**
+     * @var ArrayCollection<int, Image>
+     */
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Image::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $images;
 
     public function __construct()
