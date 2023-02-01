@@ -22,3 +22,12 @@ liip_imagine:
                     size: [600, 280]
                     # crop the input image, if required
                     mode: outbound
+        post_gallery:
+            quality: 75
+            filters:
+                # use and setup the "thumbnail" filter
+                thumbnail:
+                    # set the thumbnail size to "32x32" pixels
+                    size: [600, 600]
+                    # crop the input image, if required
+                    mode: outbound

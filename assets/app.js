@@ -30,6 +30,18 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 // lightbox
 import Lightbox from "bs5-lightbox";
 
-document
-    .querySelectorAll(".lightbox")
-    .forEach((el) => el.addEventListener("click", Lightbox.initialize));
+const options = {
+    keyboard: true,
+    size: "fullscreen",
+};
+
+// document
+//     .querySelectorAll(".lightbox")
+//     .forEach((el) => el.addEventListener("click", Lightbox.initialize));
+document.querySelectorAll(".lightbox").forEach((el) =>
+    el.addEventListener("click", (e) => {
+        e.preventDefault();
+        const lightbox = new Lightbox(el, options);
+        lightbox.show();
+    })
+);

@@ -44,7 +44,7 @@
         const addImageLink = document.createElement('a');
         addImageLink.classList.add('btn', 'btn-light', 'border', 'border-secondary', 'my-2');
         addImageLink.href = '#';
-        addImageLink.innerText = 'Add an image';
+        addImageLink.innerText = 'Add field';
         addImageLink.dataset.collectionHolderClass = 'post_images';
 
         const newLinkLi = document.createElement('li').append(addImageLink);
@@ -52,12 +52,19 @@
         const collectionImagesHolder = document.querySelector('#post_images');
         collectionImagesHolder.appendChild(addImageLink);
 
+        // Create RemoveLink
+        // const removeLink = document.createElement('a');
+        // removeLink.classList.add('btn', 'btn-light', 'border', 'border-danger', 'text-danger', 'ms-1');
+        // removeLink.href = '#';
+        // removeLink.innerText = 'Remove field';
+        // collectionImagesHolder.append(removeLink);
+
         const addFormToCollection = (e) => {
             e.preventDefault();
             const collectionImagesHolder = document.querySelector('#' + e.currentTarget.dataset.collectionHolderClass);
 
-            const itemImageInput = document.createElement('div');
-            itemImageInput.classList.add('mb-3');
+            const itemImageInput = document.createElement('li');
+            itemImageInput.classList.add('input-' + collectionImagesHolder.dataset.index,);
             itemImageInput.innerHTML = collectionImagesHolder
                 .dataset
                 .prototype
@@ -66,18 +73,42 @@
                     collectionImagesHolder.dataset.index
                 );
 
-            // Create RemoveLink
-            const removeLink = document.createElement('a');
-            removeLink.classList.add('link-danger');
-            removeLink.href = '#';
-            removeLink.innerText = 'Remove image file';
-
-            itemImageInput.prepend(removeLink);
-
             collectionImagesHolder.appendChild(itemImageInput);
+            addTagFormDeleteLink(itemImageInput);
             collectionImagesHolder.dataset.index++;
+
         };
+
         addImageLink.addEventListener('click', addFormToCollection);
+
+        const addTagFormDeleteLink = (item) => {
+            const removeFormButton = document.createElement('button');
+            removeFormButton.innerText = 'Delete this tag';
+            removeFormButton.classList.add('btn', 'btn-light', 'border', 'border-danger', 'text-danger');
+            removeFormButton.innerText = 'Remove field';
+
+            const divider = document.createElement('hr');
+            divider.classList.add('mt-4');
+
+            item.append(removeFormButton);
+            item.append(divider);
+
+            removeFormButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                // remove the li for the tag form
+                item.remove();
+            });
+        }
+
+
+        // const removeFormToCollection = (e, index) => {
+        //     e.preventDefault();
+        //     const collectionImagesHolder = document.querySelector('#' + e.currentTarget.dataset.collectionHolderClass);
+        //     console.log('ici ' + collectionImagesHolder.dataset.index);
+        // }
+
+        // removeLink.addEventListener('click', removeFormToCollection);
+
 
 
     });

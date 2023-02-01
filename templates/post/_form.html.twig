@@ -31,14 +31,22 @@
         </div>
     </div>
     <div class="col-12 col-md-4">
-        <p class="mb-0">Actions</p>
+        <p class="mb-0 fw-bold">Actions</p>
         <hr class="my-4">
         <div class="mb-3">
-            <button type="submit" id="submit-post" class="btn btn-success btn-lg w-100">{{ button_label|default('Save')
+            {% set btn_label = button_label|default('Save') %}
+            <button type="submit" id="submit-post" class="btn btn-success btn-lg w-100">{{ btn_label
                 }}</button>
+            {% if btn_label == 'Update' %}
+            <a href="{{ path('app.post.show', {'id': post.id}) }}" class="btn btn-secondary btn-lg w-100 mt-2"
+                target="_blank">
+                <i class="fa-regular fa-eye"></i>
+                Show
+            </a>
+            {% endif %}
         </div>
         <hr class="my-4">
-        <p class="mb-0">Images</p>
+        <p class="mb-0 fw-bold">Images</p>
         <hr class="my-4">
         <div class="form-control mb-3">
             {{ form_label(form.thumbFile, 'Thumb (featured image)', {'label_attr': {'class': 'form-label'}}) }}
@@ -49,19 +57,21 @@
             </div>
             {% endif %}
         </div>
-        <p class="mb-0">Gallery</p>
+        <hr class="my-4">
+        <p class="mb-0 fw-bold">Gallery</p>
+        <hr class="my-4">
         <div class="form-control mb-3">
             <ul id="post_images" class="list-unstyled" data-index="{{ form.images|length> 0 ? form.images|last.vars.name + 1 : 0
                 }}" data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}">
 
                 {% for image in form.images %}
-                <li class="">
-                    {{ form_row(image.imageFile) }}
-                    <a href="{{ path('app.post.image.delete', {'id': post.id, 'image_id': image.vars.data.id}) }}"
+                <li>
+                    {{ form_row(image.imageFile, { 'attr' : {'id': post.id, 'image_id': image.vars.data.id}}) }}
+                    {# <a href="{{ path('app.post.image.delete', {'id': post.id, 'image_id': image.vars.data.id}) }}"
                         class="btn btn-danger">
                         <i class="fa-solid fa-trash"></i>
                         Delete
-                    </a>
+                    </a> #}
                 </li>
                 {% endfor %}
             </ul>

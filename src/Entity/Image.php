@@ -41,7 +41,7 @@ class Image
             // Il faut qu'au moins un champ change si vous utilisez la doctrine
             // sinon les écouteurs d'événements ne seront pas appelés et le fichier sera perdu
             // $this->createdAt = new \DateTime();
-            $this->updatedAt = new \DateTime();
+            $this->updatedAt = new \DateTime('now');
         }
     }
 

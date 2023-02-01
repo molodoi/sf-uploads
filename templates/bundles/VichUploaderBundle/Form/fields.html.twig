@@ -34,11 +34,10 @@
     {%- set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}
     {%- endif -%}
     {{- form_widget(form.file, {attr: attr}) -}}
-
-
     {%- if image_uri -%}
     <a href="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}" data-toggle="lightbox">
-        <img src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri }}" alt="" class="mt-2 img-fluid" />
+        <img src="{{ asset_helper is same as(true) ? asset(image_uri) : image_uri | imagine_filter('post_thumbnail') }}"
+            alt="" class="mt-2 img-fluid" />
     </a>
     {%- endif -%}
     <div class="d-flex flex-row justify-content-between mt-2">
@@ -55,7 +54,17 @@
             {{ form_errors(form.delete) }}
         </div>
         {% endif %}
+
         {%- endif -%}
+        {% set post_id = attr.id|default(0) %}
+        {% set image_id = attr.image_id|default(0) %}
+        {% if post_id > 0 and image_id > 0 %}
+        <a href="{{ path('app.post.image.delete', {'id': post_id, 'image_id': image_id}) }}" class="btn btn-danger">
+            <i class="fa-solid fa-trash"></i>
+            Delete
+        </a>
+        {% endif %}
+
     </div>
 </div>
 {%- endblock -%}

@@ -76,7 +76,6 @@ class PostController extends AbstractController
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             $postRepository->save($post, true);
 
             return $this->redirectToRoute('app.post.edit', ['id' => $post->getId()], Response::HTTP_SEE_OTHER);
@@ -104,7 +103,10 @@ class PostController extends AbstractController
     {
         /** App\Entity\Image $image */
         $image = $imageRepo->find($request->get('image_id'));
-        if ($request->get('id') === (string) $post->getId()) {
+        if (
+            $request->get('id') === (string) $post->getId()
+            && $image->getPost()->getId() === $post->getId()
+        ) {
             $post->removeImage($image);
             $entityManager->persist($post);
             $entityManager->flush();
