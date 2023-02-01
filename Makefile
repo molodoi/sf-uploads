@@ -208,7 +208,7 @@ phpstan: ## Run phpstan.
 .PHONY: phpstan
 
 security-checker: ## Run security-checker.
-	$(SYMFONY_CONSOLE) security:check
+	symfony check:security 
 .PHONY: security-checker
 
 lint-twigs: ## Lint twig files.
@@ -228,7 +228,7 @@ lint-schema: ## Lint Doctrine schema.
 .PHONY: lint-schema
 
 
-before-commit: cs-fixer phpstan lint-twigs lint-yaml lint-container lint-schema tests ## Run before commit.
+before-commit: cs-fixer phpstan lint-twigs lint-yaml lint-container lint-schema security-checker tests ## Run before commit.
 .PHONY: before-commit
 
 ## —— 🛠️  Others ——
