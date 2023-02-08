@@ -2,6 +2,7 @@
 
 namespace App\Tests\Functional;
 
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -12,6 +13,11 @@ class PostTest extends WebTestCase
     public function testIfCreatePostIsSuccessful(): void
     {
         $client = static::createClient();
+
+        // Log user
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('test@test.fr');
+        $client->loginUser($testUser);
 
         /** @var UrlGeneratorInterface $urlGenerator */
         $urlGenerator = $client->getContainer()->get('router');

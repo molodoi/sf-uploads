@@ -1,0 +1,43 @@
+{% extends 'base_auth.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+
+{% block body %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            {% if app.user %}
+                <div class="mb-3">
+                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app.logout') }}">Logout</a>
+                </div>
+            {% endif %}            
+
+            <h1 class="h3 mb-3 fw-normal">Login</h1>
+
+            <label for="inputEmail">Email</label>
+            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control my-2" autocomplete="email" required autofocus>
+
+            <label for="inputPassword">Password</label>
+            <input type="password" name="password" id="inputPassword" class="form-control my-2" autocomplete="current-password" required>
+
+            <div class="form-check my-3">
+                <input class="form-check-input" type="checkbox"  name="_remember_me" id="rememberMe">
+                <label class="form-check-label" for="rememberMe">
+                    Remember me
+                </label>
+            </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <button class="btn btn-primary w-100" type="submit">
+                Login
+            </button>
+            <hr />
+            <a href="{{ path('app.register') }}" class="btn btn-secondary w-100">Create an account</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

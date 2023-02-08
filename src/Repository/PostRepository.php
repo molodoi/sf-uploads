@@ -49,6 +49,7 @@ class PostRepository extends ServiceEntityRepository
 
     public function getAllPostsQuery(): Query
     {
+        
         return $this->createQueryBuilder('p')
             // ->addSelect('p', 'c', 'i')
             // ->leftJoin('p.category', 'c')
@@ -58,6 +59,24 @@ class PostRepository extends ServiceEntityRepository
             ->addSelect('p', 'c')
             ->leftJoin('p.category', 'c')
             ->orderBy('p.updatedAt', 'DESC')
+            ->getQuery();
+    }
+
+    public function getAllPostsByUserQuery($user): Query
+    {
+        $query = $this->createQueryBuilder('p')
+            // ->addSelect('p', 'c', 'i')
+            // ->leftJoin('p.category', 'c')
+            // ->leftJoin('p.featuredImage', 'i')
+            // ->orderBy('p.updatedAt', 'DESC')
+            // ->getQuery();
+            ->addSelect('p', 'c')
+            ->leftJoin('p.category', 'c');
+            if(!in_array('ROLE_ADMIN', $user->getRoles())){
+                $query->where('p.user = :user')
+                ->setParameter('user', $user->getId()->toBinary());
+            }
+            return $query->orderBy('p.updatedAt', 'DESC')
             ->getQuery();
     }
 

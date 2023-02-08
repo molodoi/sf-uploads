@@ -10,30 +10,45 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-    {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+    <style>
+        html,
+        body {
+            height: 100%;
+            background-color:#fafafa;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            padding-bottom: 40px;
+        }
+
+        .form-signin {
+            max-width: 500px;
+            padding: 15px;
+        }
+        @media (max-width: 580) { 
+            .form-signin {
+                max-width: 100%;
+                padding: 15px;
+            }   
+        }
+    </style>
     {% block stylesheets %}
     {{ encore_entry_link_tags('app') }}
     {% endblock %}
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+
 
     {% block javascripts %}
     {{ encore_entry_script_tags('app') }}
     {% endblock %}
 </head>
 
-<body class="sb-nav-fixed">
-    {% include('partials/navbar.html.twig') %}
-    <div id="layoutSidenav">
-        {% include('partials/sidebar.html.twig') %}
-        <div id="layoutSidenav_content">
-            <main>
-                <div class="container-fluid px-4">
-                    {% block body %}{% endblock %}
-                </div>
-            </main>
-            {% include('partials/footer.html.twig') %}
-        </div>
-    </div>
+<body>
+    <main class="form-signin w-100 m-auto">
+        {% block body %}{% endblock %}
+    </main>
 </body>
 
 </html>

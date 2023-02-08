@@ -163,7 +163,7 @@ database-drop: ## Create database
 .PHONY: database-drop
 
 database-create: ## Create database
-	$(SYMFONY_CONSOLE) d:d:c --if-not-exists
+	$(SYMFONY_CONSOLE) d:d:c
 .PHONY: database-create
 
 database-remove: ## Drop database
@@ -180,7 +180,7 @@ migration: ## Alias : database-migration
 
 database-migrate: ## Migrate migrations
 	$(SYMFONY_CONSOLE) d:m:m --no-interaction
-.PHONY: database-fixtures-load
+.PHONY: database-migrate
 
 migrate: ## Alias : database-migrate
 	$(MAKE) database-migrate

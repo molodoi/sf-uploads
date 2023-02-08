@@ -7,27 +7,14 @@
 
 // any CSS you import will output into a single css file (app.css in this case)
 import "./styles/app.scss";
-import * as bootstrap from "./js/bootstrap.bundle.min.js";
+// import du node_module de bootstrap
+require("bootstrap");
+// import du script sidemenu navbar de startbootstrap-sb-admin
 require("../node_modules/startbootstrap-sb-admin/src/js/scripts.js");
-
 // start the Stimulus application
 import "./bootstrap";
 
-// Tooltip
-var tooltipTriggerList = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="tooltip"]')
-);
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl);
-});
-
-// dropdown
-// const dropdownElementList = document.querySelectorAll(".dropdown-toggle");
-// const dropdownList = [...dropdownElementList].map(
-//     (dropdownToggleEl) => new bootstrap.Dropdown(dropdownToggleEl)
-// );
-
-// lightbox
+// import du bs5-lightbox
 import Lightbox from "bs5-lightbox";
 
 const options = {
@@ -35,9 +22,6 @@ const options = {
     size: "fullscreen",
 };
 
-// document
-//     .querySelectorAll(".lightbox")
-//     .forEach((el) => el.addEventListener("click", Lightbox.initialize));
 document.querySelectorAll(".lightbox").forEach((el) =>
     el.addEventListener("click", (e) => {
         e.preventDefault();

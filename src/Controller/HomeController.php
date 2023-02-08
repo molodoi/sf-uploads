@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'app.home')]
+    #[Route('/admin', name: 'app.home')]
     public function index(PostRepository $postRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $pagination = $paginator->paginate(

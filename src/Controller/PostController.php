@@ -21,16 +21,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/post')]
+#[Route('/admin/post')]
 class PostController extends AbstractController
 {
     #[Route('/', name: 'app.post.index', methods: ['GET'])]
     public function index(PostRepository $postRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $pagination = $paginator->paginate(
-            $postRepository->getAllPostsQuery(), /* query NOT result */
+            $postRepository->getAllPostsByUserQuery($this->getUser()), /* query NOT result */
             $request->query->getInt('page', 1), /* page number */
-            9 /* limit per page */
+            8 /* limit per page */
         );
 
         return $this->render('post/index.html.twig', [
@@ -50,7 +50,7 @@ class PostController extends AbstractController
                 'success',
                 'Post was created !'
             );
-
+            $post->setUser($this->getUser());
             $postRepository->save($post, true);
 
             return $this->redirectToRoute('app.post.index', [], Response::HTTP_SEE_OTHER);

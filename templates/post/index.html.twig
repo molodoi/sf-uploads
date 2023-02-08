@@ -24,7 +24,7 @@
                     <tr>
                         <th{% if posts.isSorted('c.title') %} class="sorted" {% endif %}>
                             {{ knp_pagination_sortable(posts, 'Title', 'p.title') }}
-                            </th>
+                            </th>                            
                             <th>Category</th>
                             <th{% if posts.isSorted('c.createdAt') %} class="sorted" {% endif %}>
                                 {{ knp_pagination_sortable(posts, 'Created at', 'p.createdAt') }}
@@ -38,7 +38,16 @@
                 <tbody>
                     {% for post in posts %}
                     <tr>
-                        <th scope="row">{{ post.title }}</th>
+                        <td scope="row">
+                            <strong>{{ post.title }}</strong>
+                            {% if(is_granted('ROLE_ADMIN')) %}
+                                <br />
+                                <small class="text-body-secondary">
+                                    by : {{ post.user.lastname }} {{ post.user.firstname }}
+                                    | {{ post.user.email }}
+                                </small>
+                            {% endif %}
+                        </td>
                         <td>{{ post.category.title }}</td>
                         <td class="d-none d-md-table-cell">{{ post.createdAt ? post.createdAt|date('Y-m-d H:i:s')
                             : ''

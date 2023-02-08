@@ -9,15 +9,45 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Category;
 use App\Entity\Post;
-use Doctrine\Bundle\FixturesBundle\Fixture;
+use App\Entity\User;
+use App\Entity\Category;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    public function __construct(
+        private UserPasswordHasherInterface $hasher
+    ) {
+    }
+
     public function load(ObjectManager $manager): void
     {
+
+        $user = new User(); 
+        $user->setEmail('test@test.fr')
+            ->setFirstname('test')
+            ->setLastname('test')
+            ->setRoles(['ROLE_ADMIN', 'ROLE_USER'])
+            ->setPassword(
+                $this->hasher->hashPassword($user, 'test@test.fr')
+            );
+        $manager->persist($user);
+
+        for ($i = 0; $i < 9; $i++) {
+            $user = new User();
+            $user->setEmail('test'.$i.'@test.fr')
+                ->setFirstname('firstname'.$i)
+                ->setLastname('lastname'.$i)
+                ->setPassword(
+                    $this->hasher->hashPassword($user, 'test'.$i.'@test.fr')
+                );
+
+            $manager->persist($user);
+        }
+
         $category1 = new Category();
         $category1->setTitle('Symfony 6');
         // $category1->setSlug('symfony');
@@ -46,6 +76,7 @@ class AppFixtures extends Fixture
             } else {
                 $post->setCategory($this->getReference('laravel-cat'));
             }
+            $post->setUser($user);
             $manager->persist($post);
         }
 
