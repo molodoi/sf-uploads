@@ -37,17 +37,20 @@ services:
         networks:
             - dev
 
-    mailer:
-        image: schickling/mailcatcher
-        ports: [1025, 1080]
+    maildev:
+        image: maildev/maildev
+        container_name: maildev_sfuploads
+        command: bin/maildev --web 80 --smtp 25 --hide-extensions STARTTLS
+        ports:
+            - "1080:80"
+            - "25:25"
+        restart: always
         networks:
             - dev
 
     rabbitmq:
         image: rabbitmq:3.7-management
         ports: [5672, 15672]
-        networks:
-            - dev
 
 networks:
     dev:

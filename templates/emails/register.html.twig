@@ -1,0 +1,11 @@
+<h1>Activate your account</h1>
+<p>Hi {{ user.firstname }},</p>
+<p>You must activated your account, click on the link below :</p>
+<p><a href="{{ absolute_url(path('check_valid_register_token', {token: token})) }}">Acctivate your account</a>
+<br />
+OR activate link :
+<br />
+{{ absolute_url(path('check_valid_register_token', {token: token})) }}
+
+</p>
+<p>This link expire in 3 hours</p>

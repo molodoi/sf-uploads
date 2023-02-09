@@ -47,6 +47,15 @@
 
 <body>
     <main class="form-signin w-100 m-auto">
+        {% if app.user and app.user.isVerified == false %}
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                    <strong>Your account is not activated</strong>, <br /><a href="#">Send me an activation link</a>
+                </div>
+            </div>
+        {% endif %}
+        {% include "partials/flash.html.twig" %}
         {% block body %}{% endblock %}
     </main>
 </body>

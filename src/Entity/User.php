@@ -49,6 +49,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $password = null;
 
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private $is_verified = false;
+
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $posts;
 
@@ -145,6 +148,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+    public function getIsVerified(): ?bool
+    {
+        return $this->is_verified;
+    }
+
+    public function setIsVerified(bool $is_verified): self
+    {
+        $this->is_verified = $is_verified;
+
+        return $this;
     }
 
     /**
