@@ -76,7 +76,7 @@ jobs:
               run: |
                   ./bin/console doctrine:database:drop --if-exists --force --env=test
                   ./bin/console doctrine:database:create --if-not-exists --env=test
-                  ./bin/console doctrine:schema:update --env=test --force || echo "No migrations found or schema update failed"
+                  ./bin/console make:migration || echo "No migrations"
                   ./bin/console doctrine:migrations:migrate --env=test || echo "No migrations found or migration failed"
                   ./bin/console doctrine:fixtures:load --no-interaction
               env:
