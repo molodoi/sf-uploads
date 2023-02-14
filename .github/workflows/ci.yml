@@ -68,4 +68,7 @@ jobs:
             - name: PHP Unit
               run: |
                   ./bin/console doctrine:database:create --if-not-exists
+                  ./bin/console make:m­igr­ation
+                  ./bin/console doctri­ne:­mig­rat­ion­s:m­igrate
+                  ./bin/console doctri­ne:­fix­tur­es:load
                   ./bin/phpunit
