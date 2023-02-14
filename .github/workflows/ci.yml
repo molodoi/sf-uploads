@@ -20,7 +20,8 @@ jobs:
             - name: Cache multiple paths
               uses: actions/cache@v2
               with:
-                  path: vendor
+                  path: |
+                      vendor
                   key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
 
             - name: "Composer install"
@@ -31,7 +32,6 @@ jobs:
               run: |
                   curl -sS https://get.symfony.com/cli/installer | bash
                   mv /home/runner/.symfony5/bin/symfony /usr/local/bin/symfony
-
             # Check vulnerabilities
             - name: Symfony Check Vulnerabilities
               run: symfony check:security
@@ -41,7 +41,6 @@ jobs:
               run: |
                   composer require friendsofphp/php-cs-fixer
                   ./vendor/bin/php-cs-fixer fix
-
             # PHP STAN
             - name: PHP Stan
               run: |
@@ -51,7 +50,6 @@ jobs:
                   composer config --no-plugins allow-plugins.phpstan/extension-installer true
                   composer require phpstan/phpstan-symfony
                   ./vendor/bin/phpstan analyse src --memory-limit 1G
-
             - name: Lint YAML files
               run: ./bin/console lint:yaml config --parse-tags
 
@@ -64,8 +62,10 @@ jobs:
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-            - name: Make migration
-              run: ./bin/console make:migration
+            - name: Create Database
+              run: |
+                  mkdir -p data
+                  touch data/database.sqlite
 
             - name: Migrate database
               run: ./bin/console d:m:m --no-interaction --env=test
@@ -73,10 +73,7 @@ jobs:
             - name: Loading fixtures
               run: ./bin/console d:f:l --no-interaction --env=test
 
-            - name: Execute tests (Unit and Feature tests) via PHPUnit
-              env:
-                  DATABASE_URL: "mysql://root:password@db_sfuploads:3306/sf6-webapp-test?serverVersion=8&charset=utf8mb4"
-
             - name: PHP Unit
-              run: |
-                  ./bin/phpunit
+              env:
+                  DATABASE_URL: sqlite:///%kernel.project_dir%/var/database_test.db
+              run: ./bin/phpunit
