@@ -66,4 +66,6 @@ jobs:
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
             - name: PHP Unit
-              run: ./bin/phpunit
+              run: |
+                  ./bin/console doctrine:database:create --if-not-exists
+                  ./bin/phpunit
