@@ -17,9 +17,6 @@ jobs:
                   php-version: "8.1"
                   extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring, pdo
 
-            - name: Copy .env.test.local
-              run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
-
             - name: Cache multiple paths
               uses: actions/cache@v2
               with:
@@ -67,10 +64,8 @@ jobs:
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-            - name: Create Database
-              run: |
-                  mkdir -p data
-                  touch data/database.sqlite
+            - name: Make migration
+              run: ./bin/console make:migration
 
             - name: Migrate database
               run: ./bin/console d:m:m --no-interaction --env=test
@@ -80,7 +75,7 @@ jobs:
 
             - name: Execute tests (Unit and Feature tests) via PHPUnit
               env:
-                  DATABASE_URL: sqlite:///%kernel.project_dir%/var/database_test.db
+                  DATABASE_URL: "mysql://root:password@db_sfuploads:3306/sf6-webapp-test?serverVersion=8&charset=utf8mb4"
 
             - name: PHP Unit
               run: |
