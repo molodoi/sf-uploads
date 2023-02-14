@@ -72,18 +72,11 @@ jobs:
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-            - name: Create Database
-              run: |
-                  mkdir -p data
-                  touch data/database.sqlite
-
-            - name: Migrate database
-              run: ./bin/console d:m:m --no-interaction --env=test
-
-            - name: Loading fixtures
-              run: ./bin/console d:f:l --no-interaction --env=test
-
             - name: PHP Unit
               env:
                   DATABASE_URL: mysql://root:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/sf6-webapp-test?serverVersion=8&charset=utf8mb4
-              run: ./bin/phpunit
+              run: |
+                  ./bin/console d:d:c --if-exist
+                  ./bin/console d:m:m --no-interaction --env=test
+                  ./bin/console d:f:l --no-interaction --env=test
+                  ./bin/phpunit
