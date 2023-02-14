@@ -16,8 +16,10 @@ jobs:
               with:
                   php-version: "8.1"
                   extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring, pdo
+
             - name: Copy .env.test.local
               run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
+
             - name: Cache multiple paths
               uses: actions/cache@v2
               with:
@@ -69,10 +71,13 @@ jobs:
               run: |
                   mkdir -p data
                   touch data/database.sqlite
+
             - name: Migrate database
-              run: php bin/console d:m:m --no-interaction --env=test
+              run: ./bin/console d:m:m --no-interaction --env=test
+
             - name: Loading fixtures
-              run: php bin/console d:f:l --no-interaction --env=test
+              run: ./bin/console d:f:l --no-interaction --env=test
+
             - name: Execute tests (Unit and Feature tests) via PHPUnit
               env:
                   DATABASE_URL: sqlite:///%kernel.project_dir%/var/database_test.db
