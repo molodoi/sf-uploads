@@ -2,6 +2,12 @@ name: Pipeline-CI
 on:
     push:
         branches: [main]
+
+permissions:
+    contents: read
+    # Needed for the 'trilom/file-changes-action' action
+    pull-requests: read
+
 jobs:
     ci:
         runs-on: ubuntu-latest
@@ -12,7 +18,7 @@ jobs:
                 env:
                     MYSQL_ALLOW_EMPTY_PASSWORD: false
                     MYSQL_ROOT_PASSWORD: password
-                    MYSQL_DATABASE: db_sfuploads
+                    MYSQL_DATABASE: sf6-webapp
                 ports:
                     - 3306/tcp
                 options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -73,11 +79,8 @@ jobs:
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
             - name: PHP Unit
-              env:
-                  DATABASE_URL: "mysql://root:password@db_sfuploads:${{ job.services.mysql.ports['3306'] }}/symfony?serverVersion=8&charset=utf8mb4"
               run: |
                   ./bin/console doctrine:database:create --if-not-exists
-                  ./bin/console make:m­igr­ation
-                  ./bin/console doctri­ne:­mig­rat­ion­s:m­igrate
-                  ./bin/console doctri­ne:­fix­tur­es:load
+                  ./bin/console doctri­ne:­mig­rat­ion­s:m­igrate --env=test
+                  ./bin/console doctri­ne:­fix­tur­es:load --env=test
                   ./bin/phpunit
