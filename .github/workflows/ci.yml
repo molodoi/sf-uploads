@@ -1,40 +1,39 @@
-name: Pipeline-CI
+name: Symfony
+
 on:
     push:
-        branches: [main]
-jobs:
-    ci:
-        runs-on: ubuntu-latest
-        continue-on-error: false
-        services:
-            mysql:
-                image: mysql:latest
-                env:
-                    MYSQL_ALLOW_EMPTY_PASSWORD: false
-                    MYSQL_ROOT_PASSWORD: symfony
-                    MYSQL_DATABASE: symfony
-                ports:
-                    - 3306/tcp
-                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-        steps:
-            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            - uses: actions/checkout@v2
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
 
-            # https://github.com/shivammathur/setup-php (community)
-            - name: Setup PHP, extensions and composer with shivammathur/setup-php
-              uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
+permissions:
+    contents: read
+
+jobs:
+    symfony-tests:
+        runs-on: ubuntu-latest
+        steps:
+            #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
+            # change this to (see https://github.com/shivammathur/setup-php#bookmark-versioning):
+            # uses: shivammathur/setup-php@v2
+            - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
               with:
                   php-version: "8.1"
-                  extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring, pdo
+            - uses: actions/checkout@v3
 
-            - name: Cache multiple paths
-              uses: actions/cache@v2
+            - name: Copy .env.test.local
+              run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
+
+            - name: Cache Composer packages
+              id: composer-cache
+              uses: actions/cache@v3
               with:
-                  path: |
-                      vendor
-                  key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
+                  path: vendor
+                  key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-php-
 
-            - name: "Composer install"
+            - name: Install Dependencies
               run: composer install --no-interaction --no-progress
 
             # Install Symfony CLI
@@ -72,13 +71,18 @@ jobs:
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
+            - name: Create Database
+              run: |
+                  mkdir -p data
+                  touch data/database.sqlite
+
             - name: Migrate database
-              run: ./bin/console d:m:m --no-interaction --env=test
+              run: .bin/console d:m:m --no-interaction --env=test
 
             - name: Loading fixtures
               run: ./bin/console d:f:l --no-interaction --env=test
 
             - name: Execute tests (Unit and Feature tests) via PHPUnit
               env:
-                  DATABASE_URL: "mysql://root:symfony@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/symfony?serverVersion=8&charset=utf8mb4"
-              run: ./bin/phpunit
+                  DATABASE_URL: sqlite:///%kernel.project_dir%/var/database_test.db
+              run: vendor/bin/phpunit
