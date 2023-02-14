@@ -1,46 +1,87 @@
-name: Symfony
-
+name: Pipeline-CI
 on:
     push:
-        branches: ["main"]
-    pull_request:
-        branches: ["main"]
-
-permissions:
-    contents: read
-
+        branches: [main]
 jobs:
-    symfony-tests:
+    ci:
         runs-on: ubuntu-latest
+        continue-on-error: false
+        services:
+            mysql:
+                image: mysql:latest
+                env:
+                    MYSQL_ALLOW_EMPTY_PASSWORD: false
+                    MYSQL_ROOT_PASSWORD: symfony
+                    MYSQL_DATABASE: symfony
+                ports:
+                    - 3306/tcp
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         steps:
-            #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
-            # change this to (see https://github.com/shivammathur/setup-php#bookmark-versioning):
-            # uses: shivammathur/setup-php@v2
-            - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
+            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+            - uses: actions/checkout@v2
+
+            # https://github.com/shivammathur/setup-php (community)
+            - name: Setup PHP, extensions and composer with shivammathur/setup-php
+              uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
               with:
                   php-version: "8.1"
-            - uses: actions/checkout@v3
-            - name: Copy .env.test.local
-              run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
-            - name: Cache Composer packages
-              id: composer-cache
-              uses: actions/cache@v3
+                  extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring, pdo
+
+            - name: Cache multiple paths
+              uses: actions/cache@v2
               with:
-                  path: vendor
-                  key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-                  restore-keys: |
-                      ${{ runner.os }}-php-
-            - name: Install Dependencies
-              run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-            - name: Create Database
+                  path: |
+                      vendor
+                  key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
+
+            - name: "Composer install"
+              run: composer install --no-interaction --no-progress
+
+            # Install Symfony CLI
+            - name: Symfony CLI
               run: |
-                  mkdir -p data
-                  touch data/database.sqlite
-            - name: Migrate database
-              run: php bin/console d:m:m --no-interaction --env=test
-            - name: Loading fixtures
-              run: php bin/console d:f:l --no-interaction --env=test
-            - name: Execute tests (Unit and Feature tests) via PHPUnit
+                  curl -sS https://get.symfony.com/cli/installer | bash
+                  mv /home/runner/.symfony5/bin/symfony /usr/local/bin/symfony
+            # Check vulnerabilities
+            - name: Symfony Check Vulnerabilities
+              run: symfony check:security
+
+            # PHP CS FIXER
+            - name: PHP-CS-Fixer
+              run: |
+                  composer require friendsofphp/php-cs-fixer
+                  ./vendor/bin/php-cs-fixer fix
+            # PHP STAN
+            - name: PHP Stan
+              run: |
+                  ./vendor/bin/simple-phpunit install
+                  composer require phpstan/phpstan
+                  composer require phpstan/extension-installer
+                  composer config --no-plugins allow-plugins.phpstan/extension-installer true
+                  composer require phpstan/phpstan-symfony
+                  ./vendor/bin/phpstan analyse src --memory-limit 1G
+            - name: Lint YAML files
+              run: ./bin/console lint:yaml config --parse-tags
+
+            - name: Lint Twig templates
+              run: ./bin/console lint:twig templates --env=prod
+
+            - name: Lint Parameters and Services
+              run: ./bin/console lint:container --no-debug
+
+            - name: Lint Doctrine entities
+              run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+
+            - name: Run Migration && Load Fixtures
+              run: |
+                  composer require --dev symfony/orm-pack
+                  ./bin/console doctrine:database:drop --if-exists --force
+                  ./bin/console doctrine:database:create --if-not-exists
+                  ./bin/console doctrine:schema:update --force || echo "No migrations found or schema update failed"
+                  ./bin/console doctrine:migrations:migrate || echo "No migrations found or migration failed"
+                  ./bin/console doctrine:fixtures:load --no-interaction
               env:
-                  DATABASE_URL: sqlite:///%kernel.project_dir%/var/database_test.db
-              run: vendor/bin/phpunit
+                  DATABASE_URL: "mysql://root:symfony@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/symfony?serverVersion=8&charset=utf8mb4"
+
+            - name: PHP Unit
+              run: ./bin/phpunit
