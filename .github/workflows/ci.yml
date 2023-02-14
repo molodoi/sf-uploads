@@ -72,16 +72,19 @@ jobs:
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-            - name: Run Migration && Load Fixtures
-              run: |
-                  composer require --dev symfony/orm-pack
-                  ./bin/console doctrine:database:drop --if-exists --force
-                  ./bin/console doctrine:database:create --if-not-exists
-                  ./bin/console doctrine:schema:update --force || echo "No migrations found or schema update failed"
-                  ./bin/console doctrine:migrations:migrate || echo "No migrations found or migration failed"
-                  ./bin/console doctrine:fixtures:load --no-interaction
+            - name: Install Dependencies
+              run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+            - name: Create Database
+              run: ./bin/console doctrine:database:create --if-not-exists
+
+            - name: Migrate database
+              run: ./bin/console d:m:m --no-interaction --env=test
+
+            - name: Loading fixtures
+              run: ./bin/console d:f:l --no-interaction --env=test
+
+            - name: Execute tests (Unit and Feature tests) via PHPUnit
               env:
                   DATABASE_URL: "mysql://root:symfony@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/symfony?serverVersion=8&charset=utf8mb4"
-
-            - name: PHP Unit
               run: ./bin/phpunit
