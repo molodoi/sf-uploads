@@ -72,12 +72,6 @@ jobs:
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-            - name: Install Dependencies
-              run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-
-            - name: Create Database
-              run: ./bin/console doctrine:database:create --if-not-exists
-
             - name: Migrate database
               run: ./bin/console d:m:m --no-interaction --env=test
 
