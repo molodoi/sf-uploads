@@ -77,6 +77,6 @@ jobs:
                   DATABASE_URL: mysql://root:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/sf6-webapp-test?serverVersion=8&charset=utf8mb4
               run: |
                   ./bin/console d:d:c --if-exist
-                  ./bin/console d:m:m --no-interaction --env=test
-                  ./bin/console d:f:l --no-interaction --env=test
+                  ./bin/console d:m:m --no-interaction
+                  ./bin/console d:f:l --no-interaction
                   ./bin/phpunit
