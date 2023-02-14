@@ -79,7 +79,7 @@ jobs:
                   touch data/database.sqlite
 
             - name: Migrate database
-              run: .bin/console doctrine:migration:migrate --no-interaction
+              run: ./bin/console doctrine:migration:migrate --no-interaction
 
             - name: Loading fixtures
               run: ./bin/console doctrine:fixtures:load --no-interaction --env=test
