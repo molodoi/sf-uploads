@@ -6,6 +6,16 @@ jobs:
     ci:
         runs-on: ubuntu-latest
         continue-on-error: false
+        services:
+            mysql:
+                image: mysql:latest
+                env:
+                MYSQL_ALLOW_EMPTY_PASSWORD: true
+                MYSQL_ROOT_PASSWORD: password
+                MYSQL_DATABASE: sf6-webapp-test
+                ports:
+                    - 3306/tcp
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - uses: actions/checkout@v2
@@ -75,5 +85,5 @@ jobs:
 
             - name: PHP Unit
               env:
-                  DATABASE_URL: sqlite:///%kernel.project_dir%/var/database_test.db
+                  DATABASE_URL: mysql://root:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/sf6-webapp-test?serverVersion=8&charset=utf8mb4
               run: ./bin/phpunit
