@@ -79,7 +79,7 @@ jobs:
                   ./bin/console doctrine:migrations:migrate --env=test || echo "No migrations found or migration failed"
                   ./bin/console doctrine:fixtures:load --no-interaction --purge-with-truncate
               env:
-                  DATABASE_URL: "mysql://root:symfony@127.0.0.1:3306/symfony?serverVersion=8&charset=utf8mb4"
+                  DATABASE_URL: "mysql://root:symfony@127.0.0.1:${{ jobs.services.mysql.ports['3306'] }}/symfony?serverVersion=8&charset=utf8mb4"
 
             - name: PHP Unit
               run: ./bin/phpunit
