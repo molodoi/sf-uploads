@@ -28,6 +28,7 @@ class PostController extends AbstractController
     public function index(PostRepository $postRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $pagination = $paginator->paginate(
+            /* @phpstan-ignore-next-line */
             $postRepository->getAllPostsByUserQuery($this->getUser()), /* query NOT result */
             $request->query->getInt('page', 1), /* page number */
             8 /* limit per page */
@@ -50,6 +51,7 @@ class PostController extends AbstractController
                 'success',
                 'Post was created !'
             );
+            /* @phpstan-ignore-next-line */
             $post->setUser($this->getUser());
             $postRepository->save($post, true);
 

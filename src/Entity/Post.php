@@ -40,14 +40,12 @@ class Post
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $thumbName = null;
 
-    /**
-     * @var ArrayCollection<int, Image>
-     */
+    /** @var ArrayCollection<int, Image> */
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Image::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $images;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(onDelete: 'cascade', nullable: false)]
     private ?User $user = null;
 
     public function __construct()

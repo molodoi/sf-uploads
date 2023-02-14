@@ -24,8 +24,8 @@ class LoginTest extends WebTestCase
         );
 
         $form = $crawler->filter('form[name=login]')->form([
-            '_username' => 'test@test.fr',
-            '_password' => 'test@test.fr'
+            'email' => 'test@test.fr',
+            'password' => 'test@test.fr'
         ]);
 
         $client->submit($form);
@@ -51,8 +51,8 @@ class LoginTest extends WebTestCase
         );
 
         $form = $crawler->filter('form[name=login]')->form([
-            '_username' => 'test@test.fr',
-            '_password' => 'badpass'
+            'email' => 'test@test.fr',
+            'password' => 'badpass'
         ]);
 
         $client->submit($form);
@@ -64,8 +64,8 @@ class LoginTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
-        $this->assertSelectorExists('div.alert-warning');
-        $this->assertSelectorTextContains('div.alert-warning', 'Invalid credentials.');
+        $this->assertSelectorExists('div.alert-danger');
+        $this->assertSelectorTextContains('div.alert-danger', 'Invalid credentials.');
     }
 
     public function testLogoutWorks(): void
@@ -111,8 +111,8 @@ class LoginTest extends WebTestCase
         );
 
         $form = $crawler->filter('form[name=login]')->form([
-            '_username' => 'test@test.fr',
-            '_password' => 'test@test.fr',
+            'email' => 'test@test.fr',
+            'password' => 'test@test.fr',
             '_remember_me' => 'on'
         ]);
 

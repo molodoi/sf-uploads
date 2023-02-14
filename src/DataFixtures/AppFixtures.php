@@ -9,11 +9,11 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Category;
 use App\Entity\Post;
 use App\Entity\User;
-use App\Entity\Category;
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
@@ -25,22 +25,23 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-
-        $user = new User(); 
+        $user = new User();
         $user->setEmail('test@test.fr')
             ->setFirstname('test')
             ->setLastname('test')
             ->setRoles(['ROLE_ADMIN', 'ROLE_USER'])
+            ->setIsVerified(true)
             ->setPassword(
                 $this->hasher->hashPassword($user, 'test@test.fr')
             );
         $manager->persist($user);
 
-        for ($i = 0; $i < 9; $i++) {
+        for ($i = 0; $i < 9; ++$i) {
             $user = new User();
             $user->setEmail('test'.$i.'@test.fr')
                 ->setFirstname('firstname'.$i)
                 ->setLastname('lastname'.$i)
+                ->setIsVerified(true)
                 ->setPassword(
                     $this->hasher->hashPassword($user, 'test'.$i.'@test.fr')
                 );

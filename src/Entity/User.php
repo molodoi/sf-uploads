@@ -2,25 +2,24 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\UserRepository;
-use Symfony\Bridge\Doctrine\Types\UuidType;
-use Symfony\Component\Uid\Uuid;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity('email', 'This email already existe!')]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-
     use TimestampableEntity;
 
     #[ORM\Id]
@@ -49,9 +48,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $password = null;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
-    private $is_verified = false;
+    #[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
+    private string $reset_token;
 
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $is_verified = false;
+
+    /** @var ArrayCollection<int, Post> */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $posts;
 
@@ -116,12 +119,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPlainPassword()
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
-    public function setPlainPassword($plainPassword)
+    public function setPlainPassword(string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
 
@@ -148,6 +151,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->reset_token;
+    }
+
+    public function setResetToken(?string $reset_token): self
+    {
+        $this->reset_token = $reset_token;
+
+        return $this;
     }
 
     public function getIsVerified(): ?bool

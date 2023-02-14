@@ -10,6 +10,7 @@
 namespace App\Repository;
 
 use App\Entity\Post;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
@@ -49,7 +50,6 @@ class PostRepository extends ServiceEntityRepository
 
     public function getAllPostsQuery(): Query
     {
-        
         return $this->createQueryBuilder('p')
             // ->addSelect('p', 'c', 'i')
             // ->leftJoin('p.category', 'c')
@@ -62,7 +62,7 @@ class PostRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    public function getAllPostsByUserQuery($user): Query
+    public function getAllPostsByUserQuery(User $user): Query
     {
         $query = $this->createQueryBuilder('p')
             // ->addSelect('p', 'c', 'i')
@@ -72,12 +72,13 @@ class PostRepository extends ServiceEntityRepository
             // ->getQuery();
             ->addSelect('p', 'c')
             ->leftJoin('p.category', 'c');
-            if(!in_array('ROLE_ADMIN', $user->getRoles())){
-                $query->where('p.user = :user')
-                ->setParameter('user', $user->getId()->toBinary());
-            }
-            return $query->orderBy('p.updatedAt', 'DESC')
-            ->getQuery();
+        if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+            $query->where('p.user = :user')
+            ->setParameter('user', $user->getId()->toBinary());
+        }
+
+        return $query->orderBy('p.updatedAt', 'DESC')
+        ->getQuery();
     }
 
     /** @return Post[] **/
