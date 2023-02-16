@@ -64,7 +64,7 @@ class PostController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app.post.show', methods: ['GET'])]
+    #[Route('/{slug}', name: 'app.post.show', methods: ['GET'])]
     public function show(Post $post): Response
     {
         return $this->render('post/show.html.twig', [
@@ -72,7 +72,7 @@ class PostController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app.post.edit', methods: ['GET', 'POST'])]
+    #[Route('/{slug}/edit', name: 'app.post.edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Post $post, PostRepository $postRepository): Response
     {
         $form = $this->createForm(PostType::class, $post);
@@ -80,7 +80,7 @@ class PostController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $postRepository->save($post, true);
 
-            return $this->redirectToRoute('app.post.edit', ['id' => $post->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app.post.edit', ['slug' => $post->getSlug()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('post/edit.html.twig', [
@@ -114,6 +114,6 @@ class PostController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app.post.edit', ['id' => $post->getId()]);
+        return $this->redirectToRoute('app.post.edit', ['slug' => $post->getSlug()]);
     }
 }

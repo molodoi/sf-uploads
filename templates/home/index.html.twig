@@ -21,7 +21,7 @@
             {% endif %}
             <div class="card-body">
                 <h5 class="card-title">
-                    <a href="{{ path('app.post.show', {'id': post.id}) }}" class="stretched-link">
+                    <a href="{{ path('app.post.show', {'slug': post.slug}) }}" class="stretched-link">
                         {{ post.title }}
                     </a>
                 </h5>

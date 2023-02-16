@@ -56,11 +56,11 @@
                             }}</td>
                         <td class="d-none d-md-table-cell">
                             <div class="d-flex justify-content-end">
-                                <a href="{{ path('app.post.show', {'id': post.id}) }}" class="btn btn-success me-1">
+                                <a href="{{ path('app.post.show', {'slug': post.slug}) }}" class="btn btn-success me-1">
                                     <i class="fa-regular fa-eye"></i>
                                     Show
                                 </a>
-                                <a href="{{ path('app.post.edit', {'id': post.id}) }}" class="btn btn-primary me-1">
+                                <a href="{{ path('app.post.edit', {'slug': post.slug}) }}" class="btn btn-primary me-1">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                     Edit
                                 </a>

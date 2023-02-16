@@ -53,6 +53,10 @@ form: ## Make form
 	$(SYMFONY) make:form
 .PHONY: form
 
+test: ## Make test case
+	$(SYMFONY) make:test
+.PHONY: test
+
 ## —— ✅ Test ——
 
 tests: ## Run all tests

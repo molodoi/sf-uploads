@@ -1,5 +1,5 @@
 <div id="layoutSidenav_nav">
-    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+    <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
         <div class="sb-sidenav-menu">
             <div class="nav">
                 <div class="sb-sidenav-menu-heading">Core</div>
@@ -30,20 +30,22 @@
                             <a class="nav-link" href="{{ path('app.category.index') }}">All categories</a>
                             <a class="nav-link" href="{{ path('app.category.new') }}">Add a categorie</a>
                         </nav>
-                    </div>
-                {% endif %}
-                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMedias" aria-expanded="false" aria-controls="collapseMedias">
-                    <div class="sb-nav-link-icon"><i class="fa-regular fa-image"></i></div>
-                    Medias
-                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                </a>
-                <div class="collapse" id="collapseMedias" aria-labelledby="headingOne" data-bs-parent="#collapseMedias">
-                    <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="{{ path('app.category.index') }}">All medias</a>
-                        <a class="nav-link" href="{{ path('app.category.new') }}">Add a media</a>
-                    </nav>
-                </div>
+                    </div>                   
+                {% endif %} 
                 <div class="sb-sidenav-menu-heading">Settings</div>
+                {% if is_granted('ROLE_ADMIN') %}
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
+                        <div class="sb-nav-link-icon"><i class="fas fa-user fa-fw"></i></div>
+                        Users
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseUsers" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="{{ path('app.user.index') }}">All users</a>
+                            <a class="nav-link" href="{{ path('app.user.new') }}">Add a user</a>
+                        </nav>
+                    </div>
+                {% endif %}  
                 <a class="nav-link" href="{{ path('app.home') }}">
                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                     Settings

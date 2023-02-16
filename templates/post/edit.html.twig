@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% set referer = app.request.headers.get('referer')|default('/post/') %}
+
 {% block title %}Edit Post{% endblock %}
 
 {% block body %}
@@ -17,9 +17,9 @@
             <a href="{{ path('app.post.new') }}" class="btn btn-primary me-1">
                 Create new
             </a>
-            <a href="{{ referer }}" class="btn btn-light border border-secondary">
+            <a href="{{ path('app.post.index') }}" class="btn btn-light border border-secondary">
                 <i class="fa-solid fa-chevron-left"></i>
-                Back
+                Back to list
             </a>
         </div>
     </div>

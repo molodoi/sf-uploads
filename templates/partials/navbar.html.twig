@@ -1,4 +1,4 @@
-<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-primary">
     <!-- Navbar Brand-->
     <a class="navbar-brand ps-3" href="{{ path('app.home') }}">Dashboard</a>
     <!-- Sidebar Toggle-->
@@ -19,7 +19,7 @@
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false"><i class="fas fa-user fa-fw"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="{{ path('app.profile.index', {'id': app.user.id}) }}">Profile</a></li>
                 <li>
                     <hr class="dropdown-divider" />
                 </li>

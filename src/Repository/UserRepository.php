@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +38,18 @@ class UserRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getAllUsersQuery(): Query
+    {
+        return $this->createQueryBuilder('u')
+            // ->addSelect('p', 'c', 'i')
+            // ->leftJoin('p.category', 'c')
+            // ->leftJoin('p.featuredImage', 'i')
+            // ->orderBy('p.updatedAt', 'DESC')
+            // ->getQuery();
+            ->orderBy('u.updatedAt', 'DESC')
+            ->getQuery();
     }
 
 //    /**
