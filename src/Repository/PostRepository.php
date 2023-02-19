@@ -65,11 +65,6 @@ class PostRepository extends ServiceEntityRepository
     public function getAllPostsByUserQuery(User $user): Query
     {
         $query = $this->createQueryBuilder('p')
-            // ->addSelect('p', 'c', 'i')
-            // ->leftJoin('p.category', 'c')
-            // ->leftJoin('p.featuredImage', 'i')
-            // ->orderBy('p.updatedAt', 'DESC')
-            // ->getQuery();
             ->addSelect('p', 'c')
             ->leftJoin('p.category', 'c');
         if (!in_array('ROLE_ADMIN', $user->getRoles())) {
@@ -79,6 +74,23 @@ class PostRepository extends ServiceEntityRepository
 
         return $query->orderBy('p.updatedAt', 'DESC')
         ->getQuery();
+    }
+
+    public function findBySearch(string $search): array
+    {
+        $data = $this->createQueryBuilder('p');
+
+        if (!empty($search)) {
+            $data = $data
+                ->andWhere('p.title LIKE :q')
+                ->orWhere('p.content LIKE :q')
+                ->setParameter('q', "%{$search}%");
+        }
+
+        return $data
+            ->orderBy('p.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     /** @return Post[] **/
