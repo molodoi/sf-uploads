@@ -34,7 +34,7 @@ jobs:
                   extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring, pdo
 
             - name: Copy .env.test
-              run: php -r "file_exists('.env.test') || copy('.env.test', '.env');"
+              run: php -r "file_exists('.env.test.local') || copy('.env.test.local', '.env');"
 
             - name: Cache multiple paths
               uses: actions/cache@v2
@@ -82,6 +82,8 @@ jobs:
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
             - name: PHP Unit
+              env:
+                  DATABASE_URL: mysql://root:password@mysql:3306/sf6-webapp
               run: |
                   ./bin/console doctrine:database:create --if-not-exists
                   ./bin/console doctri­ne:­mig­rat­ion­s:m­igrate --env=test
