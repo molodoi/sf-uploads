@@ -34,7 +34,7 @@ jobs:
                   extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring, pdo
 
             - name: Copy .env.test
-              run: php -r "file_exists('.env.test.local') || copy('.env.test.local', '.env');"
+              run: cp .env.test.local .env
 
             - name: Cache multiple paths
               uses: actions/cache@v2
