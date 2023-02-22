@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
         continue-on-error: false
         services:
-            db_sfuploads:
+            mysql:
                 image: mysql:latest
                 env:
                     MYSQL_ALLOW_EMPTY_PASSWORD: false
@@ -83,7 +83,7 @@ jobs:
 
             - name: PHP Unit
               env:
-                  DATABASE_URL: mysql://root:password@db_sfuploads:3306/sf6-webappsf6-webapp?serverVersion=8&charset=utf8mb4
+                  DATABASE_URL: mysql://root:password@mysql:3306/sf6-webappsf6-webapp?serverVersion=8&charset=utf8mb4
               run: |
                   ./bin/console doctrine:database:create --if-not-exists
                   ./bin/console doctri­ne:­mig­rat­ion­s:m­igrate --env=test
