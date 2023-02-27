@@ -12,16 +12,6 @@ jobs:
     ci:
         runs-on: ubuntu-latest
         continue-on-error: false
-        services:
-            mysql:
-                image: mysql:latest
-                env:
-                    MYSQL_ALLOW_EMPTY_PASSWORD: false
-                    MYSQL_ROOT_PASSWORD: password
-                    MYSQL_DATABASE: sf6-webapp
-                ports:
-                    - 3306/tcp
-                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - uses: actions/checkout@v2
@@ -44,7 +34,7 @@ jobs:
                   key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
 
             - name: "Composer install"
-              run: composer install --no-interaction --no-progress
+              run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
             # Install Symfony CLI
             - name: Symfony CLI
@@ -81,11 +71,21 @@ jobs:
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
+            - name: Create Database
+              run: |
+                mkdir -p data
+                touch data/database.sqlite
+                
+            - name: Execute tests (Unit and Feature tests) via PHPUnit
+              env:
+                DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
+              run: vendor/bin/phpunit
+
             - name: PHP Unit
               env:
-                  DATABASE_URL: mysql://root:password@mysql:3306/sf6-webapp
+                  DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
               run: |
                   ./bin/console doctrine:database:create --if-not-exists
-                  ./bin/console doctri­ne:­mig­rat­ion­s:m­igrate --env=test
-                  ./bin/console doctri­ne:­fix­tur­es:load --env=test
+                  ./bin/console doctrine:migrations:migrate --env=test
+                  ./bin/console doctrine:fixtures:load --env=test
                   ./bin/phpunit
