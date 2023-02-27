@@ -75,10 +75,10 @@ jobs:
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-            - name: Execute tests (Unit and Feature tests) via PHPUnit
-              env:
-                  DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
-              run: vendor/bin/phpunit
+            # - name: Execute tests (Unit and Feature tests) via PHPUnit
+            #   env:
+            #       DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
+            #   run: vendor/bin/phpunit
 
             - name: PHP Unit
               env:
