@@ -12,10 +12,6 @@ jobs:
     ci:
         runs-on: ubuntu-latest
         continue-on-error: false
-        env:
-            DB_DATABASE: sf6-webapp-test
-            DB_USERNAME: root
-            DB_PASSWORD: null
         services:
             mysql:
                 image: mysql:latest
