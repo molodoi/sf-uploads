@@ -29,21 +29,8 @@ jobs:
                     - 3306/tcp
                 options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         steps:
+            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - uses: actions/checkout@v2
-            - uses: actions/cache@v1
-              id: yarn-cache-node-modules
-              with:
-                  path: node_modules
-                  key: ${{ runner.os }}-yarn-cache-node-modules-${{ hashFiles('**/yarn.lock') }}
-                  restore-keys: |
-                      ${{ runner.os }}-yarn-cache-node-modules-
-
-            - name: Yarn install
-              if: steps.yarn-cache-node-modules.outputs.cache-hit != 'true'
-              run: yarn install
-
-            - name: Yarn build
-              run: yarn run encore
 
             # https://github.com/shivammathur/setup-php (community)
             - name: Setup PHP, extensions and composer with shivammathur/setup-php
