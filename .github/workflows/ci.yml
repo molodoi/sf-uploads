@@ -29,11 +29,8 @@ jobs:
                     - 3306/tcp
                 options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         steps:
-            - name: "Checkout code"
-              uses: actions/checkout@v2
-
-            - name: Cache node_modules
-              uses: actions/cache@v1
+            - uses: actions/checkout@v2
+            - uses: actions/cache@v1
               id: yarn-cache-node-modules
               with:
                   path: node_modules
