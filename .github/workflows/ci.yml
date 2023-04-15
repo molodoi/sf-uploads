@@ -12,14 +12,18 @@ jobs:
     ci:
         runs-on: ubuntu-latest
         continue-on-error: false
+        env:
+            DB_DATABASE: sf6-webapp-test
+            DB_USERNAME: symfony
+            DB_PASSWORD: password
         services:
             mysql:
                 image: mysql:latest
                 env:
                     MYSQL_ALLOW_EMPTY_PASSWORD: true
                     MYSQL_DATABASE: sf6-webapp-test
-                    MYSQL_USER: root
-                    MYSQL_PASSWORD: null
+                    MYSQL_USER: symfony
+                    MYSQL_PASSWORD: password
                 ports:
                     - 3306/tcp
                 options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -88,7 +92,7 @@ jobs:
                   php bin/console doctrine:schema:update --force || echo "No migrations found or schema update failed"
                   php bin/console doctrine:migrations:migrate --no-interaction --env=test || echo "No migrations found or migration failed"
               env:
-                  DATABASE_URL: mysql://root:@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/sf6-webapp-test
+                  DATABASE_URL: mysql://symfony:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/sf6-webapp-test
 
             - name: Loading fixtures
               run: ./bin/console doctrine:fixtures:load --no-interaction --env=test
