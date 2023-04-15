@@ -12,6 +12,9 @@ jobs:
     ci:
         runs-on: ubuntu-latest
         continue-on-error: false
+        strategy:
+            matrix:
+                node-version: ["18.16.x"]
         env:
             DB_DATABASE: webapp_test
             DB_USERNAME: symfony
@@ -57,14 +60,22 @@ jobs:
               run: |
                   curl -sS https://get.symfony.com/cli/installer | bash
                   mv /home/runner/.symfony5/bin/symfony /usr/local/bin/symfony
+
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node-version }}
+
             # Check vulnerabilities
             - name: Symfony Check Vulnerabilities
               run: symfony check:security
+
             # PHP CS FIXER
             - name: PHP-CS-Fixer
               run: |
                   composer require friendsofphp/php-cs-fixer
                   ./vendor/bin/php-cs-fixer fix
+
             # PHP STAN
             - name: PHP Stan
               run: |
@@ -74,6 +85,7 @@ jobs:
                   composer config --no-plugins allow-plugins.phpstan/extension-installer true
                   composer require phpstan/phpstan-symfony
                   ./vendor/bin/phpstan analyse src --memory-limit 1G
+
             - name: Lint YAML files
               run: ./bin/console lint:yaml config --parse-tags
 
@@ -85,6 +97,11 @@ jobs:
 
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+
+            - name: npm install, build, and test
+              run: |
+                  npm install
+                  npm run build
 
             - name: Run Migration && Fixtures
               run: |
