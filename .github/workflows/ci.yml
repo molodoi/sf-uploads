@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
         continue-on-error: false
         env:
-            DB_DATABASE: sf6-webapp-test
+            DB_DATABASE: webapp_test
             DB_USERNAME: symfony
             DB_PASSWORD: password
         services:
@@ -21,9 +21,10 @@ jobs:
                 image: mysql:latest
                 env:
                     MYSQL_ALLOW_EMPTY_PASSWORD: true
-                    MYSQL_DATABASE: sf6-webapp-test
+                    MYSQL_DATABASE: webapp_test
                     MYSQL_USER: symfony
                     MYSQL_PASSWORD: password
+                    MYSQL_ROOT_PASSWORD: password
                 ports:
                     - 3306/tcp
                 options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -93,7 +94,7 @@ jobs:
                   php bin/console doctrine:migrations:migrate --no-interaction --env=test || echo "No migrations found or migration failed"
                   php bin/console doctrine:fixtures:load --no-interaction --env=test
               env:
-                  DATABASE_URL: mysql://symfony:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/sf6-webapp-test
+                  DATABASE_URL: mysql://root:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/webapp_test
 
             - name: PHP Unit
               run: ./bin/phpunit
