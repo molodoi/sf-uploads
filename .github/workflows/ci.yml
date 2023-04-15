@@ -12,9 +12,6 @@ jobs:
     ci:
         runs-on: ubuntu-latest
         continue-on-error: false
-        strategy:
-            matrix:
-                node-version: ["18.16.x"]
         env:
             DB_DATABASE: webapp_test
             DB_USERNAME: symfony
@@ -50,6 +47,7 @@ jobs:
               with:
                   path: |
                       vendor
+                      node_modules
                   key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
 
             - name: "Composer install"
@@ -61,10 +59,22 @@ jobs:
                   curl -sS https://get.symfony.com/cli/installer | bash
                   mv /home/runner/.symfony5/bin/symfony /usr/local/bin/symfony
 
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v1
+            - name: Check out repository
+              uses: actions/checkout@v2
+
+            - name: Install Node.js 18.6
+              uses: actions/setup-node@v2
               with:
-                  node-version: ${{ matrix.node-version }}
+                  node-version: 18.6
+
+            - name: Installer les paquets Node.js de Symfony
+              run: npm ci && npm run build
+
+            - name: Installer MailDev
+              run: npm install -g maildev
+
+            - name: Démarrer le service MailDev
+              run: maildev
 
             # Check vulnerabilities
             - name: Symfony Check Vulnerabilities
