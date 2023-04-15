@@ -47,7 +47,6 @@ jobs:
               with:
                   path: |
                       vendor
-                      node_modules
                   key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
 
             - name: "Composer install"
