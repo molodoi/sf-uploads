@@ -88,13 +88,13 @@ jobs:
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
             - name: Run Migration && Fixtures
+                env:
+                  DATABASE_URL: mysql://root:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/webapp
               run: |
                   composer require --dev symfony/orm-pack
                   php bin/console doctrine:schema:update --force || echo "No migrations found or schema update failed"
                   php bin/console doctrine:migrations:migrate --no-interaction --env=test || echo "No migrations found or migration failed"
                   php bin/console doctrine:fixtures:load --no-interaction --env=test
-              env:
-                  DATABASE_URL: mysql://root:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/webapp
 
             - name: PHP Unit
               run: ./bin/phpunit
