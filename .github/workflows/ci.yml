@@ -38,26 +38,17 @@ jobs:
               with:
                   php-version: "8.1"
                   extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring, curl, libxml, zip, pcntl, sqlite, pdo_sqlite, bcmath, soap, intl, exif,
-            # Composer .env.test
-            # - name: Copy .env.test
-            #   run: cp .env.test.local .env
 
-            # Npm install dependencies
-            - name: "Composer install"
-            - run: npm install
-
-            # Npm build
-            - run: npm run build
+            - name: Copy .env.test
+              run: cp .env.test.local .env
 
             - name: Cache multiple paths
               uses: actions/cache@v2
               with:
                   path: |
                       vendor
-                      node_modules
                   key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
 
-            # Composer install
             - name: "Composer install"
               run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
@@ -66,21 +57,14 @@ jobs:
               run: |
                   curl -sS https://get.symfony.com/cli/installer | bash
                   mv /home/runner/.symfony5/bin/symfony /usr/local/bin/symfony
-
-            # Composer install
-            - name: "Composer install"
-              run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-
             # Check vulnerabilities
             - name: Symfony Check Vulnerabilities
               run: symfony check:security
-
             # PHP CS FIXER
             - name: PHP-CS-Fixer
               run: |
                   composer require friendsofphp/php-cs-fixer
                   ./vendor/bin/php-cs-fixer fix
-
             # PHP STAN
             - name: PHP Stan
               run: |
@@ -90,7 +74,6 @@ jobs:
                   composer config --no-plugins allow-plugins.phpstan/extension-installer true
                   composer require phpstan/phpstan-symfony
                   ./vendor/bin/phpstan analyse src --memory-limit 1G
-
             - name: Lint YAML files
               run: ./bin/console lint:yaml config --parse-tags
 
