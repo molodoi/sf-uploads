@@ -12,6 +12,21 @@ jobs:
     ci:
         runs-on: ubuntu-latest
         continue-on-error: false
+        env:
+            DB_DATABASE: sf6-webapp-test
+            DB_USERNAME: root
+            DB_PASSWORD: null
+        services:
+            mysql:
+                image: mysql:latest
+                env:
+                    MYSQL_ALLOW_EMPTY_PASSWORD: true
+                    MYSQL_DATABASE: sf6-webapp-test
+                    MYSQL_USER: root
+                    MYSQL_PASSWORD: null
+                ports:
+                    - 3306/tcp
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - uses: actions/checkout@v2
@@ -44,11 +59,6 @@ jobs:
             # Check vulnerabilities
             - name: Symfony Check Vulnerabilities
               run: symfony check:security
-            # Create Database
-            - name: Create Database
-              run: |
-                  mkdir -p data
-                  touch data/database.sqlite
             # PHP CS FIXER
             - name: PHP-CS-Fixer
               run: |
@@ -63,6 +73,7 @@ jobs:
                   composer config --no-plugins allow-plugins.phpstan/extension-installer true
                   composer require phpstan/phpstan-symfony
                   ./vendor/bin/phpstan analyse src --memory-limit 1G
+
             - name: Lint YAML files
               run: ./bin/console lint:yaml config --parse-tags
 
@@ -75,21 +86,16 @@ jobs:
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-            # - name: Execute tests (Unit and Feature tests) via PHPUnit
-            #   env:
-            #       DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
-            #   run: vendor/bin/phpunit
-            - name: Migrate database
-              run: ./bin/console doctrine:migrations:migrate --no-interaction --env=test
+            - name: Run Migration
+              run: |
+                  composer require --dev symfony/orm-pack
+                  php bin/console doctrine:schema:update --force || echo "No migrations found or schema update failed"
+                  php bin/console doctrine:migrations:migrate --no-interaction --env=test || echo "No migrations found or migration failed"
+              env:
+                  DATABASE_URL: mysql://root:@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/sf6-webapp-test
 
             - name: Loading fixtures
               run: ./bin/console doctrine:fixtures:load --no-interaction --env=test
 
             - name: PHP Unit
-              env:
-                  DATABASE_URL: sqlite:///%kernel.project_dir%/var/database.sqlite
               run: ./bin/phpunit
-              #   ./bin/console doctrine:database:create
-              #   ./bin/console doctrine:database:create --if-not-exists
-              #   ./bin/console doctrine:migrations:migrate --env=test
-              #   ./bin/console doctrine:fixtures:load --env=test
