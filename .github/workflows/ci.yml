@@ -70,11 +70,13 @@ jobs:
             - name: Installer les paquets Node.js de Symfony
               run: npm ci && npm run build
 
-            - name: Installer MailDev
-              run: npm install -g maildev
-
-            - name: Démarrer le service MailDev
-              run: maildev
+            - name: Configurer Mailtrap
+              env:
+                  MAILTRAP_USER: ${{ secrets.MAILTRAP_USER }}
+                  MAILTRAP_PASSWORD: ${{ secrets.MAILTRAP_PASSWORD }}
+              run: |
+                  php -r "file_put_contents('.env.test.local', 'MAILER_DSN=smtp://$MAILTRAP_USER:$MAILTRAP_PASSWORD@sandbox.smtp.mailtrap.io:2525?encryption=tls&auth_mode=login');"
+                  php -r "file_put_contents('.env.test', 'MAILER_DSN=smtp://$MAILTRAP_USER:$MAILTRAP_PASSWORD@sandbox.smtp.mailtrap.io:2525?encryption=tls&auth_mode=login');"
 
             # Check vulnerabilities
             - name: Symfony Check Vulnerabilities
@@ -107,11 +109,6 @@ jobs:
 
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
-
-            - name: npm install, build, and test
-              run: |
-                  npm install
-                  npm run build
 
             - name: Run Migration && Fixtures
               run: |
