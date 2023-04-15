@@ -86,16 +86,14 @@ jobs:
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-            - name: Run Migration
+            - name: Run Migration && Fixtures
               run: |
                   composer require --dev symfony/orm-pack
                   php bin/console doctrine:schema:update --force || echo "No migrations found or schema update failed"
                   php bin/console doctrine:migrations:migrate --no-interaction --env=test || echo "No migrations found or migration failed"
+                  php bin/console doctrine:fixtures:load --no-interaction --env=test
               env:
                   DATABASE_URL: mysql://symfony:password@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/sf6-webapp-test
-
-            - name: Loading fixtures
-              run: ./bin/console doctrine:fixtures:load --no-interaction --env=test
 
             - name: PHP Unit
               run: ./bin/phpunit
