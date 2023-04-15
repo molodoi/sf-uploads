@@ -31,6 +31,9 @@ jobs:
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: "16.x"
 
             # https://github.com/shivammathur/setup-php (community)
             - name: Setup PHP, extensions and composer with shivammathur/setup-php
@@ -38,17 +41,26 @@ jobs:
               with:
                   php-version: "8.1"
                   extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring, curl, libxml, zip, pcntl, sqlite, pdo_sqlite, bcmath, soap, intl, exif,
+            # Composer .env.test
+            # - name: Copy .env.test
+            #   run: cp .env.test.local .env
 
-            - name: Copy .env.test
-              run: cp .env.test.local .env
+            # Npm install dependencies
+            - name: "Composer install"
+            - run: npm install
+
+            # Npm build
+            - run: npm run build
 
             - name: Cache multiple paths
               uses: actions/cache@v2
               with:
                   path: |
                       vendor
+                      node_modules
                   key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
 
+            # Composer install
             - name: "Composer install"
               run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
@@ -57,14 +69,21 @@ jobs:
               run: |
                   curl -sS https://get.symfony.com/cli/installer | bash
                   mv /home/runner/.symfony5/bin/symfony /usr/local/bin/symfony
+
+            # Composer install
+            - name: "Composer install"
+              run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
             # Check vulnerabilities
             - name: Symfony Check Vulnerabilities
               run: symfony check:security
+
             # PHP CS FIXER
             - name: PHP-CS-Fixer
               run: |
                   composer require friendsofphp/php-cs-fixer
                   ./vendor/bin/php-cs-fixer fix
+
             # PHP STAN
             - name: PHP Stan
               run: |
