@@ -40,7 +40,7 @@ jobs:
                   extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring, curl, libxml, zip, pcntl, sqlite, pdo_sqlite, bcmath, soap, intl, exif,
 
             - name: Copy .env.test
-              run: cp .env.test.local .env
+              run: cp .env.test .env
 
             # - name: Cache multiple paths
             #   uses: actions/cache@v2
