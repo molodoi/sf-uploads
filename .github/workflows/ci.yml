@@ -43,8 +43,8 @@ jobs:
                   php-version: "8.1"
                   extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring, curl, libxml, zip, pcntl, bcmath, soap, intl, exif,
 
-            - name: Copy .env
-              run: php -r "file_exists('.env') || copy('.env.test', '.env');"
+            # - name: Copy .env
+            #   run: php -r "file_exists('.env') || copy('.env.test', '.env');"
 
             - name: Install Dependencies
               if: steps.vendor-cache.outputs.cache-hit != 'true'
@@ -88,32 +88,32 @@ jobs:
               run: symfony check:security
 
             # PHP-CS-Fixer
-            # - name: PHP-CS-Fixer
-            #   run: |
-            #       composer require friendsofphp/php-cs-fixer
-            #       ./vendor/bin/php-cs-fixer fix
+            - name: PHP-CS-Fixer
+              run: |
+                  composer require friendsofphp/php-cs-fixer
+                  ./vendor/bin/php-cs-fixer fix
 
             # PHP STAN
-            # - name: PHP Stan
-            #   run: |
-            #       ./vendor/bin/simple-phpunit install
-            #       composer require phpstan/phpstan
-            #       composer require phpstan/extension-installer
-            #       composer config --no-plugins allow-plugins.phpstan/extension-installer true
-            #       composer require phpstan/phpstan-symfony
-            #       ./vendor/bin/phpstan analyse src --memory-limit 1G
+            - name: PHP Stan
+              run: |
+                  ./vendor/bin/simple-phpunit install
+                  composer require phpstan/phpstan
+                  composer require phpstan/extension-installer
+                  composer config --no-plugins allow-plugins.phpstan/extension-installer true
+                  composer require phpstan/phpstan-symfony
+                  ./vendor/bin/phpstan analyse src --memory-limit 1G
 
-            # - name: Lint YAML files
-            #   run: ./bin/console lint:yaml config --parse-tags
+            - name: Lint YAML files
+              run: ./bin/console lint:yaml config --parse-tags
 
-            # - name: Lint Twig templates
-            #   run: ./bin/console lint:twig templates --env=prod
+            - name: Lint Twig templates
+              run: ./bin/console lint:twig templates --env=prod
 
-            # - name: Lint Parameters and Services
-            #   run: ./bin/console lint:container --no-debug
+            - name: Lint Parameters and Services
+              run: ./bin/console lint:container --no-debug
 
-            # - name: Lint Doctrine entities
-            #   run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+            - name: Lint Doctrine entities
+              run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
             - name: Run Migration && Fixtures
               run: |
