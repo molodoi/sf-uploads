@@ -87,9 +87,9 @@ jobs:
 
             # PHP CS FIXER
             - name: PHP-CS-Fixer
-              uses: docker://jakzal/phpqa:php8.2-alpine
+              uses: docker://jakzal/phpqa:php8.1-alpine
               with:
-                  args: php-cs-fixer --dry-run --allow-risky=yes --no-interaction --ansi fix
+                  args: php-cs-fixer fix
 
             # PHP STAN
             - name: PHP Stan
