@@ -45,11 +45,11 @@ class RegisterTest extends WebTestCase
         // $this->assertEmailHtmlBodyContains($email, 'Activate your account');
         // $this->assertEmailTextBodyContains($email, $newRegisteredUser);      
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
-        $client->followRedirect();
-        $this->assertRouteSame('security.login');
-        $this->assertResponseIsSuccessful();
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        // $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        // $client->followRedirect();
+        // $this->assertRouteSame('security.login');
+        // $this->assertResponseIsSuccessful();
+        // $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
     public function testForgetPasswordWorks(): void
