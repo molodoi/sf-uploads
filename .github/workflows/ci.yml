@@ -87,9 +87,9 @@ jobs:
 
             # PHP CS FIXER
             - name: PHP-CS-Fixer
-              run: |
-                  composer require friendsofphp/php-cs-fixer
-                  ./vendor/bin/php-cs-fixer fix ./src --rules=@Symfony --verbose
+              uses: docker://jakzal/phpqa:php8.2-alpine
+              with:
+                  args: php-cs-fixer --dry-run --allow-risky=yes --no-interaction --ansi fix
 
             # PHP STAN
             - name: PHP Stan
